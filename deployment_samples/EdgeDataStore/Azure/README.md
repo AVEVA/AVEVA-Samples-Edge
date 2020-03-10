@@ -29,7 +29,7 @@ This sample uses bash scripts to deploy Edge Data Store using Azure IoT Hub and 
    ```
 1. Create an Azure IoT Hub with IoT Edge enabled, see [Microsoft Docs](https://docs.microsoft.com/en-us/azure/iot-hub/iot-hub-create-through-portal)
 1. Create an Azure Container Registry with Admin user enabled, see [Microsoft Docs](https://docs.microsoft.com/en-us/azure/container-registry/container-registry-get-started-portal)
-1. Build Edge Data Store container matching Edge device processor architecture (ARM32, ARM64, or AMD64), see [OSIsoft Docs](https://osisoft.github.io/Edge-Data-Store-Docs/V1/Docker/EdgeDocker.html)
+1. Build Edge Data Store container matching the edge device processor architecture (ARM32, ARM64, or AMD64), see [OSIsoft Docs](https://osisoft.github.io/Edge-Data-Store-Docs/V1/Docker/EdgeDocker.html)
 1. Push container image to Azure Container Registry, see [Microsoft Docs](https://docs.microsoft.com/en-us/azure/container-registry/container-registry-get-started-portal#push-image-to-registry)
    ```bash
    docker push <acrLoginServer>/edgedatastore:v1
@@ -59,9 +59,9 @@ The sample will execute the following steps to deploy and configure Edge Data St
 1. Create an Azure IoT Edge Device in Azure IoT Hub
 1. Deploy the Edge Data Store Azure IoT Edge Module to the Azure IoT Edge Device
 1. Retrieve the connection string for the Azure IoT Edge Device
-1. Prepare a folder of files to send to the Edge device
+1. Prepare a folder of files to send to the edge device
 1. Back up that folder by IP address to record a record of what was sent to the device
-1. Send the folder to the Edge device
+1. Send the folder to the edge device
 1. Run the `device.sh` script on the device, which will run the following steps
    1. Prepare for and install the Azure IoT Edge runtime and Azure IoT Security Daemon
    1. Configure Azure IoT Edge by setting the device connection string
