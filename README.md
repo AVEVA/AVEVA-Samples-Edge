@@ -4,9 +4,9 @@ OSIsoft's Edge technologies, including OSIsoft Edge Data Store and OSIsoft Edge 
 
 The OSIsoft Edge Samples are organized by tasks and accessible through the following table:
 
-| Task                                         | Description                                                        | Languages    |
-| -------------------------------------------- | ------------------------------------------------------------------ | ------------ |
-| [Deployment](./deployment_samples/README.md) | These samples demonstrate deployment of OSIsoft Edge technologies. | Bash Scripts |
+| Task                                | Description                                                        | Languages    |
+| ----------------------------------- | ------------------------------------------------------------------ | ------------ |
+| [Deployment](./deployment_samples/) | These samples demonstrate deployment of OSIsoft Edge technologies. | Bash Scripts |
 
 ## About this repo
 
