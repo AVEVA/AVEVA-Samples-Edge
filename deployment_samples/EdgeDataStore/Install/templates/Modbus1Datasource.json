@@ -1,0 +1,5 @@
+{
+      "IpAddress": "172.16.1.5",
+	  "StreamIdPrefix": "pump.",
+      "ApplyPrefixToStreamId": true
+    }

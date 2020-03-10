@@ -1,0 +1,63 @@
+{
+  "modulesContent": {
+    "$edgeAgent": {
+      "properties.desired": {
+        "modules": {
+          "edgedatastore": {
+            "settings": {
+              "image": "{azureContainerRegistryImageUrl}",
+              "createOptions": "{\"HostConfig\":{\"Binds\":[\"/usr/share/OSIsoft:/usr/share/OSIsoft/\"],\"NetworkMode\":\"host\"},\"NetworkingConfig\":{\"EndpointsConfig\":{\"host\":{}}}}"
+            },
+            "type": "docker",
+            "status": "running",
+            "restartPolicy": "always",
+            "version": "1.0"
+          }
+        },
+        "runtime": {
+          "settings": {
+            "minDockerVersion": "v1.25",
+            "registryCredentials": {
+              "ProductReadiness": {
+                "address": "{azureContainerRegistryAddress}",
+                "password": "{azureContainerRegistryPassword}",
+                "username": "{azureContainerRegistryUsername}"
+              }
+            }
+          },
+          "type": "docker"
+        },
+        "schemaVersion": "1.0",
+        "systemModules": {
+          "edgeAgent": {
+            "settings": {
+              "image": "mcr.microsoft.com/azureiotedge-agent:1.0",
+              "createOptions": ""
+            },
+            "type": "docker"
+          },
+          "edgeHub": {
+            "settings": {
+              "image": "mcr.microsoft.com/azureiotedge-hub:1.0",
+              "createOptions": "{\"HostConfig\":{\"PortBindings\":{\"443/tcp\":[{\"HostPort\":\"443\"}],\"5671/tcp\":[{\"HostPort\":\"5671\"}],\"8883/tcp\":[{\"HostPort\":\"8883\"}]}}}"
+            },
+            "type": "docker",
+            "status": "running",
+            "restartPolicy": "always"
+          }
+        }
+      }
+    },
+    "$edgeHub": {
+      "properties.desired": {
+        "routes": {
+          "route": "FROM /messages/* INTO $upstream"
+        },
+        "schemaVersion": "1.0",
+        "storeAndForwardConfiguration": {
+          "timeToLiveSecs": 7200
+        }
+      }
+    }
+  }
+}
