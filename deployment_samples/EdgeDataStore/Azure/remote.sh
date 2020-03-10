@@ -31,4 +31,3 @@ echo "Running script on edge device..."
 ssh $UserId@$IPAddress /usr/local/eds-install/device.sh $OS "$ConnectionString"
 
 echo "Complete!"
-
