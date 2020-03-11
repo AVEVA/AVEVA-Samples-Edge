@@ -50,7 +50,8 @@ This sample uses bash scripts to deploy Edge Data Store using Azure IoT Hub and 
    ```
 1. Configure [config.ini](config.ini) with required information for the device
 1. If necessary, update the IotEdgeConfigPath file with the correct Edge Data Store container image for the destination device processor architecture (ARM32, ARM64, or AMD64)
-1. Configure specified EdsConfigPath file ([eds-config.json](eds-config.json) by default) with required Edge Data Store system configuration, see [OSIsoft Docs](https://osisoft.github.io/Edge-Data-Store-Docs/V1/Configuration/EdgeSystemConfiguration.html)
+1. Configure specified EdsConfigPath file ([eds-config.json](eds-config.json) by default) with required Edge Data Store system configuration, see [OSIsoft Docs](https://osisoft.github.io/Edge-Data-Store-Docs/V1/Configuration/EdgeSystemConfiguration.html)  
+   **Note: The default EDS configuration file is the minimum configuration from the [OSIsoft Docs](https://osisoft.github.io/Edge-Data-Store-Docs/V1/Configuration/EdgeSystemConfiguration.html#configure-minimum-edge-data-store), and includes no Periodic Egress Endpoints or Adapters**
 
 ## Sample Deployment Process
 

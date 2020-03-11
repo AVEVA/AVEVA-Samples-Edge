@@ -1,9 +1,9 @@
 ,{
-    "Id": "<egressID>",
-    "ExecutionPeriod": "00:00:10",
-    "NamespaceId": "<database>",
-    "StreamPrefix": "<prefix>",
-    "Endpoint": "<url>",
-    "ClientId": "<id>",
-    "ClientSecret": "<password>"
+  "Id": "<egressID>",
+  "ExecutionPeriod": "00:00:10",
+  "NamespaceId": "<database>",
+  "StreamPrefix": "<prefix>",
+  "Endpoint": "<url>",
+  "ClientId": "<id>",
+  "ClientSecret": "<password>"
 }

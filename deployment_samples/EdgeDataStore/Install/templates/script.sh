@@ -1,20 +1,19 @@
-
 loc="/usr/local/install/send"
 
-#make sure the system is up to date for installation
-#not necessary always
+# Make sure the system is up to date for installation
+# Not always necessary
 #echo "Update"
-#	sudo apt-get update -y --force-yes -qq
+#sudo apt-get update -y --force-yes -qq
 #echo "Upgrade"
-#	sudo apt-get upgrade -y --force-yes -qq
+#sudo apt-get upgrade -y --force-yes -qq
 
 echo "Installing EDS"
-#silent.ini answers the questions asked during the installation
-	sudo apt-get install -q -y $loc/installation_files/EdgeDataStore.deb < $loc/silent.ini
+# Silent.ini answers the questions asked during the installation
+sudo apt-get install -q -y $loc/installation_files/EdgeDataStore.deb < $loc/silent.ini
 
 echo
 echo "Waiting"
-#wait for it to setup and start running
+# Wait for it to setup and start running
 for (( ; ; ))
 do
   if curl --fail -s http://localhost:5590/api/v1/configuration > /dev/null; then
@@ -27,15 +26,15 @@ do
 done
 
 echo
-echo "Configure system based on JSONs"
+echo "Configure system based on JSON files"
 echo "Configure datasource"
-#update files
-	curl -i -d "@$loc/Modbus1Datasource.json" -H "Content-Type: application/json" -X PUT http://localhost:5590/api/v1/configuration/Modbus1/Datasource
+# Update files
+curl -i -d "@$loc/Modbus1Datasource.json" -H "Content-Type: application/json" -X PUT http://localhost:5590/api/v1/configuration/Modbus1/Datasource
 echo
 echo "Configure dataselection"
-	curl -i -d "@$loc/Modbus1Dataselection.json" -H "Content-Type: application/json" -X PUT http://localhost:5590/api/v1/configuration/Modbus1/Dataselection
+curl -i -d "@$loc/Modbus1Dataselection.json" -H "Content-Type: application/json" -X PUT http://localhost:5590/api/v1/configuration/Modbus1/Dataselection
 echo
 echo "Configure egress"
-	curl -i -d "@$loc/PeriodicEgressEndpoints.json" -H "Content-Type: application/json" -X PUT http://localhost:5590/api/v1/configuration/storage/PeriodicEgressEndpoints/
+curl -i -d "@$loc/PeriodicEgressEndpoints.json" -H "Content-Type: application/json" -X PUT http://localhost:5590/api/v1/configuration/storage/PeriodicEgressEndpoints/
 		
 		
