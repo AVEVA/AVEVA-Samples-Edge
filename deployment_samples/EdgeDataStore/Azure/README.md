@@ -21,6 +21,14 @@ This sample uses bash scripts to deploy Edge Data Store using Azure IoT Hub and 
    ```bash
    az extension add --name azure-cli-iot-ext
    ```
+1. Log in to Azure CLI, see [Microsoft Docs](https://docs.microsoft.com/en-us/cli/azure/reference-index?view=azure-cli-latest#az-login)
+   ```bash
+   az login
+   ```
+1. Set the active subscription for Azure CLI, see [Microsoft Docs](https://docs.microsoft.com/en-us/cli/azure/manage-azure-subscriptions-azure-cli?view=azure-cli-latest#change-the-active-subscription)
+   ```bash
+   az account set --subscription "{Subscription}"
+   ```
 1. Install Docker, see [Docker Docs](https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-using-the-convenience-script)  
    **Note: if preferred, download script and inspect it before running**
    ```bash

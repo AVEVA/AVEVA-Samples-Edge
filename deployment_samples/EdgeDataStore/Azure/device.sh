@@ -1,3 +1,6 @@
+# Bash: Exit on error
+set -e
+
 echo "Device: Registering Microsoft key and software repository feed..."
 curl https://packages.microsoft.com/config/$1/multiarch/prod.list > ./microsoft-prod.list
 sudo cp ./microsoft-prod.list /etc/apt/sources.list.d/
@@ -9,16 +12,15 @@ sudo apt-get update
 
 echo "Device: Install the container runtime..."
 echo -e "y" | sudo apt-get install moby-engine
-echo -e "y" | sudo apt-get install moby-cli
 
-echo "Device: Install the Azure IoT Security Daemon..."
+echo "Device: Install the Azure IoT runtime..."
 echo -e "y" | sudo apt-get install iotedge
 
 echo "Device: Set device connection string..."
 sudo sed -i "s#\(device_connection_string: \).*#\1\"$2\"#g" /etc/iotedge/config.yaml
 
-echo "Device: Restart iotedge in 5 seconds..."
-sleep 5
+echo "Device: Restart iotedge in 10 seconds..."
+sleep 10
 
 echo "Device: Restart iotedge..."
 sudo systemctl restart iotedge
@@ -37,3 +39,5 @@ done
 
 echo "Device: Update EDS configuration..."
 curl -i -d "@/usr/local/eds-install/config.json" -H "Content-Type: application/json" -X PUT http://localhost:5590/api/v1/configuration
+
+echo "Device: Complete!"
