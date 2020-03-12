@@ -13,6 +13,7 @@ This sample uses bash scripts to install and configure Edge Data Store on a remo
    ```
    Then install a Linux distribution like [Ubuntu](https://www.microsoft.com/store/apps/9N9TNGVNDL3Q), and use `bash` for all other commands in this ReadMe.
 1. Prepare an `installation_files` folder with the Edge Data Store `.deb` files for the required processor architecture(s)
+1. (Optional) Configure template files in ./templates as desired
 
 ### Per-Device Setup
 
@@ -24,6 +25,11 @@ This sample uses bash scripts to install and configure Edge Data Store on a remo
    ```
 1. (Optional) Configure [loc.ini](loc.ini) with required information for the device
 1. (Optional) Configure [egress.ini](egress.ini) with required data egress information for the device
+1. (Optional) Configure template files in `./templates` as desired
+
+The default template files include egress at a 10 second interval, as well as an example Modbus adapter configuration. The Modbus adapter is not expected to function without modification as it does not represent a real Modbus device.
+
+To disable deployment and configuration of the Modbus adapter, change the 'y' to 'N' in the the [silent.ini](./templates/silent.ini) file and comment out the lines in [script.sh](./templates/script.sh) that run `curl` requests to configure the `Modbus1` endpoint.
 
 ## Sample Deployment Process
 
@@ -38,9 +44,11 @@ The sample will execute the following steps to install and configure Edge Data S
 1. Back up the send folder by IP address to record a record of what was sent to the device
 1. Send the folder to the edge device
 1. Run the `script.sh` script on the device, which will run the following steps
-   1. Install Edge Data Store silently
+   1. Install Edge Data Store silently and create a Modbus adapter instance
    1. Verify the installation succeeded
-   1. Configure Edge Data Store egress
+   1. Configure Edge Data Store Modbus Adapter Data Source
+   1. Configure Edge Data Store Modbus Adapter Data Selection
+   1. Configure Edge Data Store Periodic Egress
 
 ## Running the Sample
 
