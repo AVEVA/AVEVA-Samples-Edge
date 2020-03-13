@@ -29,6 +29,7 @@ sudo apt install sshpass
 echo "Test: Set up passwordless login to device..."
 echo "" | ssh-keygen -t rsa -b 4096 -C productreadiness -P ""
 echo "Test: $UserId@$IpAddress"
+ssh-copy-id $UserId@$IpAddress
 echo "$Password yes" | sshpass ssh-copy-id $UserId@$IpAddress
 
 echo "Test: Running remote deployment script..."
