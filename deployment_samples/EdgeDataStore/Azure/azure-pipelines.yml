@@ -45,6 +45,8 @@ jobs:
 
       - bash: |
           chmod +x test.sh
+          chmod +x remote.sh
+          chmod +x reset.sh
           ./test.sh
         workingDirectory: $(Build.SourcesDirectory)$(projPath)/
         displayName: 'Run tests'

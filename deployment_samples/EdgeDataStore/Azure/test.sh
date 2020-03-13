@@ -29,4 +29,7 @@ echo "Test: Running reset script..."
 echo "Test: Stop the VM..."
 az vm stop -g $ResourceGroup -n $VmName
 
+echo "Test: Deallocate the VM..."
+az vm deallocate -g $ResourceGroup -n $VmName
+
 echo "Test: Complete!"
