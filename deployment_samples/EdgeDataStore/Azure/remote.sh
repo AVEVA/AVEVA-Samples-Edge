@@ -21,16 +21,16 @@ cp -a ./device.sh ./send/device.sh
 cp -a $EdsConfigPath ./send/config.json
 
 echo "Remote: Creating a backup..."
-rm -rf ./backup/$IPAddress
-mkdir -p ./backup/$IPAddress
-cp -r ./send/* ./backup/$IPAddress
+rm -rf ./backup/$IpAddress
+mkdir -p ./backup/$IpAddress
+cp -r ./send/* ./backup/$IpAddress
 
 echo "Remote: Sending files to device..."
-ssh $UserId@$IPAddress "sudo rm -rf /usr/local/eds-install"
-ssh $UserId@$IPAddress "sudo mkdir -m777 -p /usr/local/eds-install"
-scp -r send/* $UserId@$IPAddress:/usr/local/eds-install
+ssh $UserId@$IpAddress "sudo rm -rf /usr/local/eds-install"
+ssh $UserId@$IpAddress "sudo mkdir -m777 -p /usr/local/eds-install"
+scp -r send/* $UserId@$IpAddress:/usr/local/eds-install
 
 echo "Remote: Running edge device setup script..."
-ssh $UserId@$IPAddress /usr/local/eds-install/device.sh $OS "$ConnectionString"
+ssh $UserId@$IpAddress /usr/local/eds-install/device.sh $OS "$ConnectionString"
 
 echo "Remote: Complete!"

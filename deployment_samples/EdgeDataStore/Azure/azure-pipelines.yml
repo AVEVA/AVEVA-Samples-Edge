@@ -35,7 +35,8 @@ variables:
 jobs:
   - job: Tests
     pool:
-      vmImage: 'ubuntu-latest'
+      name: 00-OSIManaged-Test
+      demands: COMPUTERNAME -equals $(buildAgent)
     steps:
       - template: '/miscellaneous/build_templates/config.yml'
         parameters:

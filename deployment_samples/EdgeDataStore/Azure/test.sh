@@ -1,4 +1,5 @@
-set -x
+# Bash: Exit on error
+set -e
 
 echo "Test: Read settings from config.ini..."
 source <(grep = config.ini | tr -d "\r")
