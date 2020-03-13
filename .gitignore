@@ -303,10 +303,13 @@ typings/
 # FuseBox cache
 .fusebox/
 
-#DynamoDB Local files 
+# DynamoDB Local files 
 .dynamodb/ 
 
 .idea/
 
 # Credential Config Files
 product-readiness.*
+
+# Deployment send folders
+send/

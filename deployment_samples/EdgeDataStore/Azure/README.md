@@ -43,10 +43,11 @@ This sample uses bash scripts to deploy Edge Data Store using Azure IoT Hub and 
    docker push <acrLoginServer>/edgedatastore:v1
    ```
 1. Configure specified IotEdgeConfigPath file ([iotedge-config.json](iotedge-config.json) by default) with required Azure IoT Edge Device Module information, specifically the required Azure Container Registry details, see [Microsoft Docs](https://osisoft.github.io/Edge-Data-Store-Docs/V1/Configuration/EdgeSystemConfiguration.html)
+   1. {azureContainerRegistryName} should be the name of the Azure Container Registry
    1. {azureContainerRegistryAddress} should be the 'Login server'
    1. {azureContainerRegistryPassword} should be the 'password' from 'Access Keys'
    1. {azureContainerRegistryUsername} should be the 'Username' from 'Access Keys'
-   1. {azureContainerRegistryImageUrl} should be the specific image URI, like `myregistry.azurecr.io/edgedatastore:v1`
+   1. {azureContainerRegistryImageUri} should be the specific image URI, like `myregistry.azurecr.io/edgedatastore:v1`
 
 ### Per-Device Setup
 
@@ -84,6 +85,10 @@ Open a bash terminal, and run the `remote.sh` script
 ```bash
 ./remote.sh
 ```
+
+### Running the Automated Test
+
+TODO
 
 ---
 

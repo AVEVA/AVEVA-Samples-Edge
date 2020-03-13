@@ -1,0 +1,48 @@
+trigger:
+  batch: true
+  branches:
+    include:
+      - master
+  paths:
+    include:
+      - '/deployment_samples/EdgeDataStore/Azure'
+
+pr:
+  branches:
+    include:
+      - master
+  paths:
+    include:
+      - '/deployment_samples/EdgeDataStore/Azure'
+
+schedules:
+  - cron: '0 0 * * 0'
+    displayName: Weekly build
+    branches:
+      include:
+        - master
+    always: true
+
+variables:
+  - template: '/miscellaneous/build_templates/variables.yml'
+  - name: projPath
+    value: '/deployment_samples/EdgeDataStore/Azure'
+  - name: CredFile
+    value: config.ini
+  - name: CredFileLibrary
+    value: product-readiness.eds_azure.ini
+
+jobs:
+  - job: Tests
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+      - template: '/miscellaneous/build_templates/config.yml'
+        parameters:
+          fileOriginal: $(CredFile)
+          fileLibrary: $(CredFileLibrary)
+          filePath: $(projPath)
+
+      - script: ./test.sh
+        workingDirectory: $(Build.SourcesDirectory)$(projPath)/
+        displayName: 'Run tests'

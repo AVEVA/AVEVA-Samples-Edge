@@ -18,7 +18,7 @@
           "settings": {
             "minDockerVersion": "v1.25",
             "registryCredentials": {
-              "ProductReadiness": {
+              "{azureContainerRegistryName}": {
                 "address": "{azureContainerRegistryAddress}",
                 "password": "{azureContainerRegistryPassword}",
                 "username": "{azureContainerRegistryUsername}"
