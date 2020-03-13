@@ -43,6 +43,6 @@ jobs:
           fileLibrary: $(CredFileLibrary)
           filePath: $(projPath)
 
-      - script: ./test.sh
+      - bash: ./test.sh
         workingDirectory: $(Build.SourcesDirectory)$(projPath)/
         displayName: 'Run tests'
