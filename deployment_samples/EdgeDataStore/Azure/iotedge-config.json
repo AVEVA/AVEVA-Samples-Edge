@@ -5,7 +5,7 @@
         "modules": {
           "edgedatastore": {
             "settings": {
-              "image": "{azureContainerRegistryImageUrl}",
+              "image": "{azureContainerRegistryImageUri}",
               "createOptions": "{\"HostConfig\":{\"Binds\":[\"/usr/share/OSIsoft:/usr/share/OSIsoft/\"],\"NetworkMode\":\"host\"},\"NetworkingConfig\":{\"EndpointsConfig\":{\"host\":{}}}}"
             },
             "type": "docker",
