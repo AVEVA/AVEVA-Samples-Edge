@@ -46,7 +46,9 @@ jobs:
       - bash: |
           chmod +x test.sh
           chmod +x remote.sh
+          chmod +x device.sh
           chmod +x reset.sh
+          chmod +x reset-device.sh
           ./test.sh
         failOnStderr: true
         workingDirectory: $(Build.SourcesDirectory)$(projPath)/
