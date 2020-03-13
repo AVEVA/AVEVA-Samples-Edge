@@ -48,5 +48,6 @@ jobs:
           chmod +x remote.sh
           chmod +x reset.sh
           ./test.sh
+        failOnStderr: true
         workingDirectory: $(Build.SourcesDirectory)$(projPath)/
         displayName: 'Run tests'

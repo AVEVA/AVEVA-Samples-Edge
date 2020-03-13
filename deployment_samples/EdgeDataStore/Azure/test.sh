@@ -1,3 +1,5 @@
+set -x
+
 echo "Test: Read settings from config.ini..."
 source <(grep = config.ini | tr -d "\r")
 
