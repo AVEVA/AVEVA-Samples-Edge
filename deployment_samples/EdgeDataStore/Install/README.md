@@ -1,6 +1,6 @@
 # OSIsoft Edge Data Store Install Deployment Sample
 
-This sample uses bash scripts to install and configure Edge Data Store on a remote edge device.
+This sample uses bash scripts to install and configure Edge Data Store on a remote Linux edge device.
 
 ## Requirements
 
