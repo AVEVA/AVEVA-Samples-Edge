@@ -1,5 +1,7 @@
 # OSIsoft Edge Data Store Azure IoT Deployment Sample
 
+[![Build Status](https://dev.azure.com/osieng/engineering/_apis/build/status/product-readiness/Edge/EDS_Azure?branchName=master)](https://dev.azure.com/osieng/engineering/_build/latest?definitionId=1383&branchName=master)
+
 This sample uses bash scripts to deploy Edge Data Store using Azure IoT Hub and Azure IoT Edge Modules.
 
 ## Requirements
