@@ -35,6 +35,19 @@ This sample uses bash scripts to deploy Edge Data Store using Azure IoT Hub and 
    curl -fsSL https://get.docker.com -o get-docker.sh
    sudo sh get-docker.sh
    ```
+1. After downloading this repository, it may be necessary to change the mode for the bash scripts before running them. In order to do so, use the `chmod` command: 
+   ```bash
+   # Required scripts
+   chmod +x remote.sh
+   chmod +x device.sh
+   
+   # Optional (For reset scripts)
+   chmod +x reset.sh
+   chmod +x reset-device.sh
+
+   # Optional (For automated test script)
+   chmod +x test.sh
+   ```
 1. Create an Azure IoT Hub with IoT Edge enabled, see [Microsoft Docs](https://docs.microsoft.com/en-us/azure/iot-hub/iot-hub-create-through-portal)
 1. Create an Azure Container Registry with Admin user enabled, see [Microsoft Docs](https://docs.microsoft.com/en-us/azure/container-registry/container-registry-get-started-portal)
 1. Build Edge Data Store container matching the edge device processor architecture (ARM32, ARM64, or AMD64), see [OSIsoft Docs](https://osisoft.github.io/Edge-Data-Store-Docs/V1/Docker/EdgeDocker.html)
@@ -80,15 +93,43 @@ The sample will execute the following steps to deploy and configure Edge Data St
 
 ## Running the Sample
 
-Open a bash terminal, and run the `remote.sh` script
+Open a bash terminal, and run the `remote.sh` script.
 
 ```bash
 ./remote.sh
 ```
 
-### Running the Automated Test
+## Running the Reset Script
 
-TODO
+A script is also included that can restore the Azure Iot Hub and destination edge device back to their original state. In order to do so, open a bash terminal and run the `reset.sh` script.
+
+```bash
+./reset.sh
+```
+
+## Running the Automated Test
+
+**Note: Running the automated test requires extensive setup and a dedicated Azure VM, this section is largely intended to document internal build pipeline requirements.**
+
+### Requirements
+
+Configure the [config.ini](config.ini) file including the Test section:
+
+1. Create (or find) an Azure Virtual Machine using the Ubuntu 18.04 LTS image, and enter the IpAddress, OS (ubuntu/18.04), UserName, and Password created for the device
+1. Ensure the Azure IoT Hub Name is entered for HubName, and enter the Virtual Machine name for DeviceId (DeviceId can be any string, but should be used to identify the device)
+1. Create (or find) an Azure Service Principal for use with the test script, see [Microsoft Docs](https://docs.microsoft.com/en-us/azure/active-directory/develop/app-objects-and-service-principals)
+   The service principal username and password should be entered for AzUsername and AzPassword
+1. Enter your Azure Tenant ID into AzTenant, see [Microsoft Docs](https://docs.microsoft.com/en-us/onedrive/find-your-office-365-tenant-id?redirectSourcePath=%252fen-us%252farticle%252fFind-your-Office-365-tenant-ID-6891b561-a52d-4ade-9f39-b492285e2c9b)
+1. Enter your Azure Subscription Name into AzSubscription; your list of subscriptions should be listed when you login using the Azure CLI `az login` command
+1. Enter the Azure Container Registry fields described in the last step of [One-Time Local Setup](#One-Time-Local-Setup) for the "Acr" fields
+
+### Using the Bash Terminal
+
+Once the [config.ini](config.ini) file is fully configured (including the Test section), open a bash terminal and run the `test.sh` script.
+
+```bash
+./test.sh
+```
 
 ---
 

@@ -30,9 +30,9 @@ if [ -z "$location" ]
 		read -p "Where are we installing EDS? (IP Address) " location	
 fi
 
-if [ -z "$userID" ]
+if [ -z "$userName" ]
 	then	
-		read -p "Remote Computer User ID?  " userID	
+		read -p "Remote Computer User ID?  " userName	
 fi
 
 if [ -z "$osType" ]
@@ -70,7 +70,7 @@ do
 	
 	if [ -z "$id" ]
 		then	
-			read -p "What is the UserID/ClientID?  " id	
+			read -p "What is the UserName/ClientID?  " id	
 	fi
 	
 	if [ -z "$egressPassword" ]
@@ -183,8 +183,8 @@ cp -r ./send ./backup/$location
 	
 # Send files	
 echo "Sending files over"
-scp -r send $userID@$location:/usr/local/install
+scp -r send $userName@$location:/usr/local/install
 
 # Run bash script
 echo "Running local script"
-ssh $userID@$location /usr/local/install/send/script.sh
+ssh $userName@$location /usr/local/install/send/script.sh
