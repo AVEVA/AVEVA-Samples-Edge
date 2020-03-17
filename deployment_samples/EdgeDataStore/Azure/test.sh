@@ -1,3 +1,6 @@
+# Bash: Exit on error
+set -e
+
 echo "Test: Read settings from config.ini..."
 source <(grep = config.ini | tr -d "\r")
 
@@ -30,14 +33,9 @@ ssh -o "StrictHostKeyChecking=no" $UserId@$IpAddress
 echo "Test: Copy ssh key to device..."
 echo "$Password" | sshpass ssh-copy-id -f $UserId@$IpAddress
 
-# Bash: Exit on error
-set -e
 
 echo "Test: Running remote deployment script..."
 ./remote.sh
-
-# Bash: No exit on error
-set +e
 
 echo "Test: Running reset script..."
 ./reset.sh
