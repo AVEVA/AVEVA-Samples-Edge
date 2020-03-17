@@ -33,9 +33,6 @@ echo "$Password" | sshpass ssh-copy-id -f $UserId@$IpAddress
 # Bash: Exit on error
 set -e
 
-echo "FAIL NOW"
-(exit 1)
-
 echo "Test: Running remote deployment script..."
 ./remote.sh
 
