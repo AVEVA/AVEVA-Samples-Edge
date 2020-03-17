@@ -50,6 +50,5 @@ jobs:
           chmod +x reset.sh
           chmod +x reset-device.sh
           ./test.sh
-        failOnStderr: true
         workingDirectory: $(Build.SourcesDirectory)$(projPath)/
         displayName: 'Run tests'
