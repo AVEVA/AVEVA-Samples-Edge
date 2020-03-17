@@ -1,0 +1,65 @@
+trigger:
+  batch: true
+  branches:
+    include:
+      - master
+  paths:
+    include:
+      - '/deployment_samples/EdgeDataStore/Install'
+
+pr:
+  branches:
+    include:
+      - master
+  paths:
+    include:
+      - '/deployment_samples/EdgeDataStore/Install'
+
+schedules:
+  - cron: '0 0 * * 0'
+    displayName: Weekly build
+    branches:
+      include:
+        - master
+    always: true
+
+variables:
+  - template: '/miscellaneous/build_templates/variables.yml'
+  - name: projPath
+    value: '/deployment_samples/EdgeDataStore/Install'
+  - name: CredFile
+    value: config.ini
+  - name: CredFileLibrary
+    value: product-readiness.eds_Install.ini
+  - name: InstallFile
+    value: loc.ini
+  - name: InstallFileLibrary
+    value: product-readiness.eds_loc.ini
+
+jobs:
+  - job: Tests
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+      - template: '/miscellaneous/build_templates/config.yml'
+        parameters:
+          fileOriginal: $(CredFile)
+          fileLibrary: $(CredFileLibrary)
+          filePath: $(projPath)
+          
+      - template: '/miscellaneous/build_templates/config.yml'
+        parameters:
+          fileOriginal: $(InstallFile)
+          fileLibrary: $(InstallFileLibrary)
+          filePath: $(projPath)
+
+      - bash: |
+          chmod +x test.sh
+          chmod +x remote.sh
+          chmod +x device.sh
+          chmod +x reset.sh
+          chmod +x reset-device.sh
+          ./test.sh
+        failOnStderr: true
+        workingDirectory: $(Build.SourcesDirectory)$(projPath)/
+        displayName: 'Run tests'
