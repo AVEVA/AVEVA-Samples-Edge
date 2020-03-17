@@ -1,0 +1,10 @@
+echo "Reset: Read settings from config.ini..."
+source <(grep = config.ini | tr -d "\r")
+
+echo "Reset: Send device reset script to device..."
+scp -r reset-device.sh $UserId@$IpAddress:/usr/local/eds-install
+
+echo "Reset: Running device reset script..."
+ssh $UserId@$IpAddress /usr/local/eds-install/reset-device.sh
+
+echo "Reset: Complete!"

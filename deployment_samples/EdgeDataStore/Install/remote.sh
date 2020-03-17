@@ -43,9 +43,13 @@ fi
 # Prompt the user for egress information
 # In this configuration we can have multiple egress configured, each one different
 egressBody=""
-read -p "How many egresses should we configure?  " egressToConfigure
+if [ -z "$egressToConfigure" ]
+	then	
+		read -p "How many egresses should we configure?  " egressToConfigure
+fi
 			
-for (( i=1; i<=$egressToConfigure; i++ ))
+number="$egressToConfigure"
+for (( i=1; i<=number; i++ ))
 do
 	# There maybe shared information across multiple EDSs or egress endpoints, so to ease interaction we define an egress.txt file
 	# For each egress we need to substitute out the placeholders for enterable values
@@ -89,16 +93,16 @@ do
 			prefix=$locPrefix
 	fi
 	
-	if [ -z "$databaseInt" ]
+	if [ -z "$namespaceInt" ]
 		then	
-			read -p "Which database? 1 or default=default all else =diagnostics  " databaseInt		
+			read -p "Which namespace? 1 or default=default all else =diagnostics  " namespaceInt		
 	fi 
 	
-	if [ "$databaseInt" == "1" ] || [ "$databaseInt" == "default" ]
+	if [ "$namespaceInt" == "1" ] || [ "$namespaceInt" == "default" ]
 		then
-			database="default"
+			namespace="default"
 		else
-			database="diagnostics"	
+			namespace="diagnostics"	
 			prefix+="diagnostics."
 	fi		
 			
@@ -106,24 +110,24 @@ do
 		then
 		# We are configuring PI		
 			egress=$(<$PIEgress)
-			egressID="pi.${database}"
+			egressID="pi.${namespace}"
 		else
 			egress=$(<$OCSEgress)	
-			egressID="ocs.${database}"
+			egressID="ocs.${namespace}"
 	fi
 	
 	egress="${egress/<egressID>/$egressID}"  
 	egress="${egress/<id>/$id}"  
 	egress="${egress/<password>/$egressPassword}"  
 	egress="${egress/<url>/$url}"  
-	egress="${egress/<database>/$database}"  
+	egress="${egress/<namespace>/$namespace}"  
 	egress="${egress//<prefix>/$prefix}"  	
 	egressBody+=$egress	
 	unset egressConfigFile
 	unset id
 	unset egressPassword
 	unset url
-	unset databaseInt
+	unset namespaceInt
 	unset prefix
 	echo "Egress configured"
 done	
@@ -157,7 +161,7 @@ if [ "$osType" == "1" ] || [ "$osType" == "x64" ]
   then	
     cp -a ./templates/installation_files/EdgeDataStore_linux-x64.deb ./send/installation_files/EdgeDataStore.deb
   else
-    cp -a ./templates/installation_files/EdgeDataStore_linux-arm.deb./send/installation_files/EdgeDataStore.deb
+    cp -a ./templates/installation_files/EdgeDataStore_linux-arm.deb ./send/installation_files/EdgeDataStore.deb
 fi
 
 echo "Finalizing send folder"
