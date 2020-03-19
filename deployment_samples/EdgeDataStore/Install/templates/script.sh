@@ -38,12 +38,12 @@ echo
 echo "Configure system based on JSON files"
 echo "Configure datasource"
 # Update files
-curl -i -d "@$loc/Modbus1Datasource.json" -H "Content-Type: application/json" -X PUT http://localhost:5590/api/v1/configuration/Modbus1/Datasource
+curl -i -d "@$loc/Modbus1Datasource.json" -H "Content-Type: application/json" -X PUT http://localhost:5591/api/v1/configuration/Modbus1/Datasource
 echo
 echo "Configure dataselection"
-curl -i -d "@$loc/Modbus1Dataselection.json" -H "Content-Type: application/json" -X PUT http://localhost:5590/api/v1/configuration/Modbus1/Dataselection
+curl -i -d "@$loc/Modbus1Dataselection.json" -H "Content-Type: application/json" -X PUT http://localhost:5591/api/v1/configuration/Modbus1/Dataselection
 echo
 echo "Configure egress"
-curl -i -d "@$loc/PeriodicEgressEndpoints.json" -H "Content-Type: application/json" -X PUT http://localhost:5590/api/v1/configuration/storage/PeriodicEgressEndpoints/
+curl -i -d "@$loc/PeriodicEgressEndpoints.json" -H "Content-Type: application/json" -X PUT http://localhost:5591/api/v1/configuration/storage/PeriodicEgressEndpoints/
 		
 		
