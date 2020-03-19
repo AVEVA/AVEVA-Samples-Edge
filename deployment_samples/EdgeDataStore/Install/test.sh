@@ -21,7 +21,10 @@ echo "" | ssh-keygen -t rsa -b 4096 -C productreadiness -P ""
 echo "Test: Disable Strict Host Key Checking..."
 ssh -o "StrictHostKeyChecking=no" $UserName@$IpAddress
 echo "Test: Copy ssh key to device..."
-echo "$Password" | sshpass ssh-copy-id -f $UserName@$IpAddress
+echo "exit" | echo "$Password" | sshpass ssh-copy-id -f $UserName@$IpAddress
+
+echo "Test: Copy install file to location."
+scp $UserName@$IpAddress:/usr/local/EdgeDataStore.deb ./templates/installation_files/EdgeDataStore_linux-x64.deb
 
 # Bash: Exit on error
 set -e

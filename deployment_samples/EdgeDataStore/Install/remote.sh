@@ -183,6 +183,8 @@ cp -r ./send ./backup/$location
 	
 # Send files	
 echo "Sending files over"
+ssh $userName@$location "sudo rm -rf /usr/local/install"
+ssh $userName@$location "sudo mkdir -m777 -p /usr/local/install"
 scp -r send $userName@$location:/usr/local/install
 
 # Run bash script
