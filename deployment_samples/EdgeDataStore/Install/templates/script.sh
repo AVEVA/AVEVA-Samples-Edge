@@ -11,18 +11,27 @@ echo "Installing EDS"
 # Silent.ini answers the questions asked during the installation
 sudo apt-get install -q -y $loc/installation_files/EdgeDataStore.deb < $loc/silent.ini
 
+condition=0
 echo
 echo "Waiting"
 # Wait for it to setup and start running
 for (( ; ; ))
 do
-  if curl --fail -s http://localhost:5590/api/v1/configuration > /dev/null; then
-    echo "Device: Get config succeeded, EDS is running!"
-    break;
-  else
-    echo "Device: Get config failed, waiting 5 seconds to retry..."
-    sleep 5
-  fi
+	if curl --fail -s http://localhost:5590/api/v1/configuration > /dev/null; then
+		echo "Device: Get config succeeded, EDS is running!"
+		break;
+	else
+		echo "Device: Get config failed, waiting 5 seconds to retry..."
+		sleep 5
+	fi
+	((condition++))
+	if condition > 10; then 	
+		echo "Device: Things didn't work..."
+		exit 1
+	else
+		echo "Try $condition"
+		sleep 5
+	fi
 done
 
 echo

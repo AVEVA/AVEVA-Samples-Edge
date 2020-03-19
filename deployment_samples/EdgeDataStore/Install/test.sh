@@ -31,16 +31,6 @@ set -e
 
 echo "Test: run remote.sh with config file"
 echo loc.ini | ./remote.sh
-
-echo "Test: See if files are there"
-file1=`cat backup/location\=here/send/PeriodicEgressEndpoints.json`
-
-if [[ $file1 == *"diagnostics"* ]] 
-	then
-		echo "Egress endpoint in right spot and configured"
-	else
-		exit 1
-fi
   
 echo "Test: See if files are there2"
 file2=`cat send/PeriodicEgressEndpoints.json`
