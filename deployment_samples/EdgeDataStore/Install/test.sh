@@ -23,11 +23,11 @@ ssh -o "StrictHostKeyChecking=no" $UserName@$IpAddress
 echo "Test: Copy ssh key to device..."
 echo "$Password" | sshpass ssh-copy-id -f $UserName@$IpAddress
 
-echo "Test: Running remote deployment script..."
-./remote.sh
+# Bash: Exit on error
+set -e
 
 echo "Test: run remote.sh with config file"
-cat loc.ini | ./remote.sh
+echo loc.ini | ./remote.sh
 
 echo "Test: See if files are there"
 file1=`cat backup/location\=here/send/PeriodicEgressEndpoints.json`
@@ -47,6 +47,9 @@ if [[ $file2 == *"diagnostics"* ]]
 	else
 		exit 1
 fi
+
+# Bash: No exit on error
+set +e
 
 
 echo "Test: Running reset script..."
