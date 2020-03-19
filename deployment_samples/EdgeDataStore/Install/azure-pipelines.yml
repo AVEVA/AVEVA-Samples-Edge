@@ -30,7 +30,7 @@ variables:
   - name: CredFile
     value: config.ini
   - name: CredFileLibrary
-    value: product-readiness.eds_Install.ini
+    value: product-readiness.eds_azure.ini
   - name: InstallFile
     value: loc.ini
   - name: InstallFileLibrary
