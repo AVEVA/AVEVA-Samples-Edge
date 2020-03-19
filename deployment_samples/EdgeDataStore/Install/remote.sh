@@ -187,6 +187,7 @@ ssh $userName@$location "sudo rm -rf /usr/local/install"
 ssh $userName@$location "sudo mkdir -m777 -p /usr/local/install"
 scp -r send $userName@$location:/usr/local/install
 
+ssh $userName@$location "sudo chmod -R 755 /usr/local/install"
 # Run bash script
 echo "Running local script"
 ssh $userName@$location /usr/local/install/send/script.sh
