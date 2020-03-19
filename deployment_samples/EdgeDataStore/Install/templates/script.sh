@@ -17,7 +17,7 @@ echo "Waiting"
 # Wait for it to setup and start running
 for (( ; ; ))
 do
-	if curl --fail -s http://localhost:5590/api/v1/configuration > /dev/null; then
+	if curl --fail -s http://localhost:5591/api/v1/configuration > /dev/null; then
 		echo "Device: Get config succeeded, EDS is running!"
 		break;
 	else
