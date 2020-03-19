@@ -30,7 +30,6 @@ do
 		exit 1
 	else
 		echo "Try $condition"
-		sleep 5
 	fi
 done
 
