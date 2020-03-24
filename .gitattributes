@@ -1,4 +1,2 @@
 deployment_samples/*.sh text eol=lf
 deployment_samples/*.ini text eol=lf
-*.sh text eol=lf
-*.ini text eol=lf
