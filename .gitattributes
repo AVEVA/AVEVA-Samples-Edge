@@ -1,2 +1,3 @@
+# deployment_samples shell/ini files must use Unix line endings
 deployment_samples/**/*.sh text eol=lf
 deployment_samples/**/*.ini text eol=lf
