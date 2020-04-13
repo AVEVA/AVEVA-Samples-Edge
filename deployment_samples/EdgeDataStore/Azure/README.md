@@ -1,5 +1,7 @@
 # OSIsoft Edge Data Store Azure IoT Deployment Sample
 
+**Version:** 1.0.0
+
 [![Build Status](https://dev.azure.com/osieng/engineering/_apis/build/status/product-readiness/Edge/EDS_Azure?branchName=master)](https://dev.azure.com/osieng/engineering/_build/latest?definitionId=1383&branchName=master)
 
 This sample uses bash scripts to deploy Edge Data Store to a remote Linux edge device using Azure IoT Hub and Azure IoT Edge Modules.
@@ -37,12 +39,13 @@ This sample uses bash scripts to deploy Edge Data Store to a remote Linux edge d
    curl -fsSL https://get.docker.com -o get-docker.sh
    sudo sh get-docker.sh
    ```
-1. After downloading this repository, it may be necessary to change the mode for the bash scripts before running them. In order to do so, use the `chmod` command: 
+1. After downloading this repository, it may be necessary to change the mode for the bash scripts before running them. In order to do so, use the `chmod` command:
+
    ```bash
    # Required scripts
    chmod +x remote.sh
    chmod +x device.sh
-   
+
    # Optional (For reset scripts)
    chmod +x reset.sh
    chmod +x reset-device.sh
@@ -50,6 +53,7 @@ This sample uses bash scripts to deploy Edge Data Store to a remote Linux edge d
    # Optional (For automated test script)
    chmod +x test.sh
    ```
+
 1. Create an Azure IoT Hub with IoT Edge enabled, see [Microsoft Docs](https://docs.microsoft.com/en-us/azure/iot-hub/iot-hub-create-through-portal)
 1. Create an Azure Container Registry with Admin user enabled, see [Microsoft Docs](https://docs.microsoft.com/en-us/azure/container-registry/container-registry-get-started-portal)
 1. Build Edge Data Store container matching the edge device processor architecture (ARM32, ARM64, or AMD64), see [OSIsoft Docs](https://osisoft.github.io/Edge-Data-Store-Docs/V1/Docker/EdgeDocker.html)
