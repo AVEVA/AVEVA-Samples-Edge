@@ -1,6 +1,3 @@
-# Bash: Exit on error
-# set -e
-
 echo "Test: Read settings from config.ini..."
 source <(grep = config.ini | tr -d "\r")
 
@@ -26,13 +23,10 @@ echo "exit" | echo "$Password" | sshpass ssh-copy-id -f $UserName@$IpAddress
 echo "Test: Copy install file to location."
 scp $UserName@$IpAddress:/usr/local/EdgeDataStore.deb ./templates/installation_files/EdgeDataStore_linux-x64.deb
 
-# Bash: Exit on error
-set -e
-
 echo "Test: run remote.sh with config file"
 echo loc.ini | ./remote.sh
   
-echo "Test: See if files are there2"
+echo "Test: See if files are locally as expected"
 file2=`cat send/PeriodicEgressEndpoints.json`
 if [[ $file2 == *"diagnostics"* ]] 
 	then
@@ -40,10 +34,6 @@ if [[ $file2 == *"diagnostics"* ]]
 	else
 		exit 1
 fi
-
-# Bash: No exit on error
-set +e
-
 
 echo "Test: Running reset script..."
 ./reset.sh
