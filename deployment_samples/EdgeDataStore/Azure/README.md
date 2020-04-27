@@ -12,33 +12,46 @@ This sample uses bash scripts to deploy Edge Data Store to a remote Linux edge d
 
 1. If on Windows, install Windows Subsystem for Linux, see [Microsoft Docs](https://docs.microsoft.com/en-us/windows/wsl/install-win10)  
    Powershell:
+
    ```powershell
    Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux
    ```
+
    Then install a Linux distribution like [Ubuntu](https://www.microsoft.com/store/apps/9N9TNGVNDL3Q), and use `bash` for all other commands in this ReadMe.
+
 1. Install Azure CLI, see [Microsoft Docs](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-apt?view=azure-cli-latest#install-with-one-command)  
    **Note: if preferred, download script and inspect it before running**
+
    ```bash
    curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
    ```
+
 1. Install IoT extension for Azure CLI, see [Microsoft Docs](https://github.com/Azure/azure-iot-cli-extension#installation)
+
    ```bash
    az extension add --name azure-cli-iot-ext
    ```
+
 1. Log in to Azure CLI, see [Microsoft Docs](https://docs.microsoft.com/en-us/cli/azure/reference-index?view=azure-cli-latest#az-login)
+
    ```bash
    az login
    ```
+
 1. Set the active subscription for Azure CLI, see [Microsoft Docs](https://docs.microsoft.com/en-us/cli/azure/manage-azure-subscriptions-azure-cli?view=azure-cli-latest#change-the-active-subscription)
+
    ```bash
    az account set --subscription "{Subscription}"
    ```
+
 1. Install Docker, see [Docker Docs](https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-using-the-convenience-script)  
    **Note: if preferred, download script and inspect it before running**
+
    ```bash
    curl -fsSL https://get.docker.com -o get-docker.sh
    sudo sh get-docker.sh
    ```
+
 1. After downloading this repository, it may be necessary to change the mode for the bash scripts before running them. In order to do so, use the `chmod` command:
 
    ```bash
@@ -58,9 +71,11 @@ This sample uses bash scripts to deploy Edge Data Store to a remote Linux edge d
 1. Create an Azure Container Registry with Admin user enabled, see [Microsoft Docs](https://docs.microsoft.com/en-us/azure/container-registry/container-registry-get-started-portal)
 1. Build Edge Data Store container matching the edge device processor architecture (ARM32, ARM64, or AMD64), see [OSIsoft Docs](https://osisoft.github.io/Edge-Data-Store-Docs/V1/Docker/EdgeDocker.html)
 1. Push container image to Azure Container Registry, see [Microsoft Docs](https://docs.microsoft.com/en-us/azure/container-registry/container-registry-get-started-portal#push-image-to-registry)
+
    ```bash
    docker push <acrLoginServer>/edgedatastore:v1
    ```
+
 1. Configure specified IotEdgeConfigPath file ([iotedge-config.json](iotedge-config.json) by default) with required Azure IoT Edge Device Module information, specifically the required Azure Container Registry details, see [Microsoft Docs](https://osisoft.github.io/Edge-Data-Store-Docs/V1/Configuration/EdgeSystemConfiguration.html)
    1. {azureContainerRegistryName} should be the name of the Azure Container Registry
    1. {azureContainerRegistryAddress} should be the 'Login server'
@@ -71,11 +86,13 @@ This sample uses bash scripts to deploy Edge Data Store to a remote Linux edge d
 ### Per-Device Setup
 
 1. (Optional) Set up SSH for passwordless login, see [Linuxize Article](https://linuxize.com/post/how-to-setup-passwordless-ssh-login/)
+
    ```bash
    ssh-keygen -t rsa -b 4096 -C "your_email@domain.com"
    ssh-copy-id remote_username@device_ip_address
    ssh remote_username@device_ip_address
    ```
+
 1. Configure [config.ini](config.ini) with required information for the device
 1. If necessary, update the IotEdgeConfigPath file with the correct Edge Data Store container image for the destination device processor architecture (ARM32, ARM64, or AMD64)
 1. Configure specified EdsConfigPath file ([eds-config.json](eds-config.json) by default) with required Edge Data Store system configuration, see [OSIsoft Docs](https://osisoft.github.io/Edge-Data-Store-Docs/V1/Configuration/EdgeSystemConfiguration.html)  
@@ -117,7 +134,7 @@ A script is also included that can restore the Azure Iot Hub and destination edg
 
 **Note: Running the automated test requires extensive setup and a dedicated Azure VM, this section is largely intended to document internal build pipeline requirements.**
 
-### Requirements
+### Test Requirements
 
 Configure the [config.ini](config.ini) file including the Test section:
 

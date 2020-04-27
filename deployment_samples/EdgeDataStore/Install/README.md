@@ -12,21 +12,26 @@ This sample uses bash scripts to install and configure Edge Data Store on a remo
 
 1. If on Windows, install Windows Subsystem for Linux, see [Microsoft Docs](https://docs.microsoft.com/en-us/windows/wsl/install-win10)  
    Powershell:
+
    ```powershell
    Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux
    ```
+
    Then install a Linux distribution like [Ubuntu](https://www.microsoft.com/store/apps/9N9TNGVNDL3Q), and use `bash` for all other commands in this ReadMe.
+
 1. Prepare an `installation_files` folder with the Edge Data Store `.deb` files for the required processor architecture(s)
 1. (Optional) Configure template files in ./templates as desired
 
 ### Per-Device Setup
 
 1. (Optional) Set up SSH for passwordless login, see [Linuxize Article](https://linuxize.com/post/how-to-setup-passwordless-ssh-login/)
+
    ```bash
    ssh-keygen -t rsa -b 4096 -C "your_email@domain.com"
    ssh-copy-id remote_username@device_ip_address
    ssh remote_username@device_ip_address
    ```
+
 1. (Optional) Configure [loc.ini](loc.ini) with required information for the device
 1. (Optional) Configure [egress.ini](egress.ini) with required data egress information for the device
 1. (Optional) Configure template files in `./templates` as desired
