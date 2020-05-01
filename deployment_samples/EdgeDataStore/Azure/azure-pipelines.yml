@@ -31,6 +31,8 @@ variables:
     value: config.ini
   - name: CredFileLibrary
     value: product-readiness.eds_azure.ini
+  - name: analysisProject
+    value: EDS_Deployment_Azure
 
 jobs:
   - job: Tests
@@ -52,3 +54,7 @@ jobs:
           ./test.sh
         workingDirectory: $(Build.SourcesDirectory)$(projPath)/
         displayName: 'Run tests'
+
+  - template: '/miscellaneous/build_templates/analysis.yml'
+    parameters:
+      language: powershell
