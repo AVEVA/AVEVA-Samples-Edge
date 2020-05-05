@@ -26,9 +26,9 @@ namespace EDSAnalytics
         {
             Console.WriteLine("Getting configuration from appsettings.json");
             IConfigurationBuilder builder = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory()) 
-                .AddJsonFile("appsettings.json")
-                .AddJsonFile("appsettings.test.json", optional: true);
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json");
+                // .AddJsonFile("appsettings.test.json", optional: true);
             IConfiguration configuration = builder.Build();
 
             // ==== Client constants ====
@@ -44,7 +44,7 @@ namespace EDSAnalytics
                 {   // ====================== Data Filtering portion ======================
                     Console.WriteLine();
                     Console.WriteLine("================= Data Filtering =================");
-                    // Step 1 - create SineWave type
+                    // Step 1 - Create SineWave type
                     // create Timestamp property
                     SdsTypeProperty timestamp = new SdsTypeProperty
                     {
@@ -70,33 +70,30 @@ namespace EDSAnalytics
                     };
                     await CreateType(sineWaveType);
 
-                    // Step 2 - create SineWave stream                   
-                    SdsStream sineWaveStream = new SdsStream
-                    {
-                        TypeId = sineWaveType.Id,
-                        Id = "SineWave",
-                        Name = "SineWave"
-                    };
-                    await CreateStream(sineWaveStream);
-                    
-                    // Step 3 - create events with a sine wave of data ranging from -1 to 1
-                    Console.WriteLine("Initializing Sine Wave Data Events");
-                    List<SineData> wave = new List<SineData>();
-                    DateTime current = new DateTime();
-                    current = DateTime.UtcNow;
-                    int count = 20;
-                    for (int i = 0; i < count; i++)
-                    {
-                        SineData newEvent = new SineData(i);
-                        newEvent.Timestamp = current.AddSeconds(i).ToString("o");
-                        wave.Add(newEvent);
-                    }
-                    await WriteDataToStream(wave, sineWaveStream);
+                    // Step 2 - Create SineWave stream        
+                    SdsStream sineWaveStream = CreateStream(sineWaveType, "SineWave", "SineWave").Result;
 
-                    // Step 4 - read in the sine wave data from the SineWave stream
-                    Console.WriteLine("Ingressing Sine Wave Data");
+                    // Step 3 - Create events of SineData objects. The value property of the SineData object is intitialized to value between -1.0 and 1.0
+                    Console.WriteLine("Initializing SineData Events");
+                    List<SineData> waveList = new List<SineData>();
+                    DateTime firstTimestamp = new DateTime();
+                    firstTimestamp = DateTime.UtcNow;
+                    // numberOfEvents must be a integer > 1
+                    int numberOfEvents = 100;
+                    for (int i = 0; i < numberOfEvents; i++)
+                    {
+                        SineData newEvent = new SineData(i)
+                        {
+                            Timestamp = firstTimestamp.AddSeconds(i).ToString("o")
+                        };
+                        waveList.Add(newEvent);
+                    }
+                    await WriteDataToStream(waveList, sineWaveStream);
+
+                    // Step 4 - Ingress the sine wave data from the SineWave stream
+                    Console.WriteLine("Ingressing sine wave data from SineWave stream");
                     var responseSineDataIngress = 
-                        await httpClient.GetAsync($"http://localhost:{port}/api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{sineWaveStream.Id}/Data?startIndex={wave[0].Timestamp}&count={count}");
+                        await httpClient.GetAsync($"http://localhost:{port}/api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{sineWaveStream.Id}/Data?startIndex={waveList[0].Timestamp}&count={numberOfEvents}");
                     CheckIfResponseWasSuccessful(responseSineDataIngress);
                     var responseBodySineData = await responseSineDataIngress.Content.ReadAsStreamAsync();
                     var returnData = new List<SineData>(); 
@@ -117,25 +114,17 @@ namespace EDSAnalytics
                     }
                     else
                     {
-                        Console.Write("Count must be greater than one");
+                        Console.Write("Count must be an integer value greater than 1");
                     }
 
-                    // Step 5 
-                    // create FilteredSineWaveStream
-                    SdsStream filteredSineWaveStream = new SdsStream
-                    {
-                        TypeId = sineWaveType.Id,
-                        Id = "FilteredSineWave",
-                        Name = "FilteredSineWave"
-                    };
-                    await CreateStream(filteredSineWaveStream);
+                    // Step 5 - Create FilteredSineWaveStream
+                    SdsStream filteredSineWaveStream = CreateStream(sineWaveType, "FilteredSineWave", "FilteredSineWave").Result;
 
-                    // Step 6 
-                    // populate FilteredSineWaveStream
+                    // Step 6 - Populate FilteredSineWaveStream with filtered data
                     List<SineData> filteredWave = new List<SineData>();
                     int numberOfValidValues = 0;
                     Console.WriteLine("Filtering Data");
-                    for (int i = 0; i < count; i++)
+                    for (int i = 0; i < numberOfEvents; i++)
                     {
                         // filters the data to only include values outside the range -0.9 to 0.9 
                         // change this conditional to apply the type of filter you desire
@@ -152,7 +141,7 @@ namespace EDSAnalytics
 
                     Console.WriteLine();
                     Console.WriteLine("================ Data Aggregation ================");
-                    // Step 7 - create aggregatedDataType type                  
+                    // Step 7 - Create aggregatedDataType type                  
                     SdsType aggregatedDataType = new SdsType
                     {
                         Id = "AggregatedData",
@@ -169,21 +158,15 @@ namespace EDSAnalytics
                     };
                     await CreateType(aggregatedDataType);
 
-                    // Step 8 - create CalculatedAggregatedData stream
-                    SdsStream calculatedAggregatedDataStream = new SdsStream
-                    {
-                        TypeId = aggregatedDataType.Id,
-                        Id = "CalculatedAggregatedData",
-                        Name = "CalculatedAggregatedData"
-                    };
-                    await CreateStream(calculatedAggregatedDataStream);
+                    // Step 8 - Create CalculatedAggregatedData stream
+                    SdsStream calculatedAggregatedDataStream = CreateStream(aggregatedDataType, "CalculatedAggregatedData", "CalculatedAggregatedData").Result;
 
-                    // Step 9 - calculate mean, min, max, and range using c# libraries and send to DataAggregation Stream
+                    // Step 9 - Calculate mean, min, max, and range using c# libraries and send to DataAggregation Stream
                     Console.WriteLine("Calculating mean, min, max, and range");
                     double mean = returnData.Average(rd => rd.Value);
                     Console.WriteLine("Mean = " + mean);
                     var values = new List<double>();
-                    for (int i = 0; i < count; i++)
+                    for (int i = 0; i < numberOfEvents; i++)
                     {
                         values.Add(returnData[i].Value);
                         numberOfValidValues++;
@@ -196,7 +179,7 @@ namespace EDSAnalytics
                     Console.WriteLine("Range = " + range);         
                     AggregateData calculatedData = new AggregateData
                     {
-                        Timestamp = current.ToString("o"),
+                        Timestamp = firstTimestamp.ToString("o"),
                         Mean = mean,
                         Minimum = min,
                         Maximum = max,
@@ -204,19 +187,13 @@ namespace EDSAnalytics
                     };
                     await WriteDataToStream(calculatedData, calculatedAggregatedDataStream);
 
-                    // Step 10 - create EdsApiAggregatedData stream
-                    SdsStream edsApiAggregatedDataStream = new SdsStream
-                    {
-                        TypeId = aggregatedDataType.Id,
-                        Id = "EdsApiAggregatedData",
-                        Name = "EdsApiAggregatedData"
-                    };
-                    await CreateStream(edsApiAggregatedDataStream);
+                    // Step 10 - Create EdsApiAggregatedData stream
+                    SdsStream edsApiAggregatedDataStream = CreateStream(aggregatedDataType, "EdsApiAggregatedData", "EdsApiAggregatedData").Result;
 
-                    // Step 11 - Uses EDS’s standard data aggregate API calls to ingress aggregation data calculated by EDS
+                    // Step 11 - Use EDS’s standard data aggregate API calls to ingress aggregation data calculated by EDS
                     var edsDataAggregationIngress =
                         await httpClient.GetAsync($"http://localhost:{port}/api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{sineWaveStream.Id}" +
-                        $"/Data/Summaries?startIndex={calculatedData.Timestamp}&endIndex={current.AddMinutes(count).ToString("o")}&count=1");
+                        $"/Data/Summaries?startIndex={calculatedData.Timestamp}&endIndex={firstTimestamp.AddMinutes(numberOfEvents).ToString("o")}&count=1");
                     CheckIfResponseWasSuccessful(edsDataAggregationIngress);
                     var responseBodyDataAggregation = await edsDataAggregationIngress.Content.ReadAsStreamAsync();
                     // since response is gzipped, it must be decoded
@@ -234,7 +211,7 @@ namespace EDSAnalytics
                         // create a new aggregateData object from the api call
                         AggregateData edsApi = new AggregateData
                         {
-                            Timestamp = current.ToString("o"),
+                            Timestamp = firstTimestamp.ToString("o"),
                             Mean = GetValue(stringReturn, "Mean"),
                             Minimum = GetValue(stringReturn, "Minimum"),
                             Maximum = GetValue(stringReturn, "Maximum"),
@@ -299,15 +276,22 @@ namespace EDSAnalytics
             }
         }
 
-        private static async Task CreateStream(SdsStream stream) 
+        private static async Task<SdsStream> CreateStream(SdsType type, string id, string name) 
         {
             using (HttpClient httpClient = new HttpClient())
             {
+                SdsStream stream = new SdsStream
+                {
+                    TypeId = type.Id,
+                    Id = id,
+                    Name = name
+                };
                 Console.WriteLine("Creating " + stream.Id + " Stream");
                 StringContent stringStream = new StringContent(JsonSerializer.Serialize(stream));
                 HttpResponseMessage responseCreateStream =
                     await httpClient.PostAsync($"http://localhost:{port}/api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{stream.Id}", stringStream);
                 CheckIfResponseWasSuccessful(responseCreateStream);
+                return stream;
             }
         }
 

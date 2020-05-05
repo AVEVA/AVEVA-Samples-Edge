@@ -1,6 +1,6 @@
 # EDS Analytics Sample and Test
 
-[![Build Status](https://dev.azure.com/osieng/engineering/_apis/build/status/product-readiness/OCS/Auth_PKCE_DotNet?branchName=master)](https://dev.azure.com/osieng/engineering/_build/latest?definitionId=863&branchName=master)
+[![Build Status](https://PLACE_BUILD_STATUS_LINK_HERE)]
 
 
 ## Requirements
@@ -60,7 +60,8 @@ For the main samples page on master [ReadMe](https://github.com/osisoft/OSI-Samp
 
 ### DeadBand Filter
 
-The purpose of this portion is to demonstrate the EDS's ability to apply a filter to a stream. This application reads in data from a stream of sine wave data (between 1.0 and -1.0) and filters out the values between -0.9 to 0.9. The data that is left is sent to a new stream in EDS. This is an example of how exception reporting can be used with EDS.
+The purpose of this portion is to demonstrate the EDS's ability to apply a filter to a stream. This application reads in data from a stream of sine wave data (between 1.0 and -1.0)
+and filters out the values between -0.9 to 0.9. The data that is left is sent to a new stream in EDS. This is an example of how exception reporting can be used with EDS.
 
 Step 1
 - Creates the SineWave type using SDS. 
@@ -78,11 +79,14 @@ Step 5
 - Creates the FilteredSineWave stream using SDS.
 
 Step 6
-- The filter is a deadband filter that accepts only data greater than 0.9 or less than -0.9. This step can be altered to be any type of filter. The data is copied into a new list of SineWave objects and is sent to the FilteredSineWave stream.
+- The filter is a deadband filter that accepts only data greater than 0.9 or less than -0.9. This step can be altered to be any type of filter. 
+The data is copied into a new list of SineWave objects and is sent to the FilteredSineWave stream.
 
 ### Data Aggregation
 
-This portion will read data from a stream of sine wave points, calculate the mean, minimum, maximum, and range, and write the result to a new stream. It also uses EDS’s standard data aggregate API calls to return the mean, minimum, maximum, and standard deviation. For more information on the EDS’s standard data aggregate API reference: [EDS Summaries]( https://osisoft.github.io/Edge-Data-Store-Docs/V1/SDS/Reading_Data_API.html#get-summaries)
+This portion will read data from a stream of sine wave points, calculate the mean, minimum, maximum, and range, and write the result to a new stream. 
+It also uses EDS’s standard data aggregate API calls to return the mean, minimum, maximum, and standard deviation. For more information on the EDS’s 
+standard data aggregate API reference: [EDS Summaries]( https://osisoft.github.io/Edge-Data-Store-Docs/V1/SDS/Reading_Data_API.html#get-summaries)
 
 Step 7
 - Creates the AggregatedData type using SDS.
@@ -97,7 +101,8 @@ Step 10
 - Creates the EdsApiAggregatedData stream using SDS
 
 Step 11
-- Data is ingressed from EDS’s standard data aggregate API calls and stored in an object. Since data is encoded using GZIP, some decoding is completed to extract the mean, minimum, maximum, and range. This data is copied into an AggregateData object and sent to the EdsApiAggregatedData stream
+- Data is ingressed from EDS’s standard data aggregate API calls and stored in an object. Since data is encoded using GZIP, some decoding is completed 
+to extract the mean, minimum, maximum, and range. This data is copied into an AggregateData object and sent to the EdsApiAggregatedData stream
 
 Step 12 
 - The Types and Streams created by the application are deleted.
