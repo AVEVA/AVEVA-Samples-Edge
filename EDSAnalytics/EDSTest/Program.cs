@@ -91,31 +91,7 @@ namespace EDSAnalytics
                     await WriteDataToStream(waveList, sineWaveStream);
 
                     // Step 4 - Ingress the sine wave data from the SineWave stream
-                    Console.WriteLine("Ingressing sine wave data from SineWave stream");
-                    var responseSineDataIngress = 
-                        await httpClient.GetAsync($"http://localhost:{port}/api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{sineWaveStream.Id}/Data?startIndex={waveList[0].Timestamp}&count={numberOfEvents}");
-                    CheckIfResponseWasSuccessful(responseSineDataIngress);
-                    var responseBodySineData = await responseSineDataIngress.Content.ReadAsStreamAsync();
-                    var returnData = new List<SineData>(); 
-                    // since the return values are in gzip, they must be decoded
-                    if (responseSineDataIngress.Content.Headers.ContentEncoding.Contains("gzip"))
-                    {
-                        var sineDataDestination = new MemoryStream();
-                        using (var decompressor = (Stream)new GZipStream(responseBodySineData, CompressionMode.Decompress, true))
-                        {
-                            decompressor.CopyToAsync(sineDataDestination).Wait();
-                        }
-                        sineDataDestination.Seek(0, SeekOrigin.Begin);
-                        var sineDataRequestContent = sineDataDestination;
-                        using (var sr = new StreamReader(sineDataRequestContent))
-                        {
-                            returnData = await JsonSerializer.DeserializeAsync<List<SineData>>(sineDataRequestContent);                  
-                        }
-                    }
-                    else
-                    {
-                        Console.Write("Count must be an integer value greater than 1");
-                    }
+                    var returnData = await IngressSineData(sineWaveStream, waveList[0].Timestamp, numberOfEvents);
 
                     // Step 5 - Create FilteredSineWaveStream
                     SdsStream filteredSineWaveStream = CreateStream(sineWaveType, "FilteredSineWave", "FilteredSineWave").Result;
@@ -136,9 +112,7 @@ namespace EDSAnalytics
                     }
                     await WriteDataToStream(filteredWave, filteredSineWaveStream);
 
-
                     // ====================== Data Aggregation portion ======================
-
                     Console.WriteLine();
                     Console.WriteLine("================ Data Aggregation ================");
                     // Step 7 - Create aggregatedDataType type                  
@@ -191,6 +165,7 @@ namespace EDSAnalytics
                     SdsStream edsApiAggregatedDataStream = CreateStream(aggregatedDataType, "EdsApiAggregatedData", "EdsApiAggregatedData").Result;
 
                     // Step 11 - Use EDS’s standard data aggregate API calls to ingress aggregation data calculated by EDS
+                    /*
                     var edsDataAggregationIngress =
                         await httpClient.GetAsync($"http://localhost:{port}/api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{sineWaveStream.Id}" +
                         $"/Data/Summaries?startIndex={calculatedData.Timestamp}&endIndex={firstTimestamp.AddMinutes(numberOfEvents).ToString("o")}&count=1");
@@ -204,11 +179,14 @@ namespace EDSAnalytics
                     }
                     destinationAggregatedData.Seek(0, SeekOrigin.Begin);
                     var requestContentAggregatedData = destinationAggregatedData;
+
                     using (var sr = new StreamReader(requestContentAggregatedData))
                     {
                         var returnDataAggregation = await JsonSerializer.DeserializeAsync<object>(requestContentAggregatedData);
                         string stringReturn = returnDataAggregation.ToString();
                         // create a new aggregateData object from the api call
+                        */
+                    string stringReturn = await IngressSummaryData(sineWaveStream, calculatedData.Timestamp, firstTimestamp.AddMinutes(numberOfEvents).ToString("o"));
                         AggregateData edsApi = new AggregateData
                         {
                             Timestamp = firstTimestamp.ToString("o"),
@@ -218,17 +196,17 @@ namespace EDSAnalytics
                             Range = GetValue(stringReturn, "Range")
                         };
                         await WriteDataToStream(edsApi, edsApiAggregatedDataStream);
-                    }
+                    //}
 
                     Console.WriteLine();
                     Console.WriteLine("==================== Clean-Up =====================");
                     
                     // Step 12 - Delete Streams and Types
                     await DeleteStream(sineWaveStream);
-                    await DeleteStream(filteredSineWaveStream);
+                    // await DeleteStream(filteredSineWaveStream);
                     await DeleteStream(calculatedAggregatedDataStream);
                     await DeleteStream(edsApiAggregatedDataStream);
-                    await DeleteType(sineWaveType);
+                    // await DeleteType(sineWaveType);
                     await DeleteType(aggregatedDataType);
                     
                 }
@@ -256,81 +234,121 @@ namespace EDSAnalytics
 
         private static async Task DeleteStream(SdsStream stream)
         {
-            using (HttpClient httpClient = new HttpClient())
-            {
-                Console.WriteLine("Deleting " + stream.Id + " Stream");
-                HttpResponseMessage responseDeleteStream = 
-                    await httpClient.DeleteAsync($"http://localhost:{port}/api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{stream.Id}");
-                CheckIfResponseWasSuccessful(responseDeleteStream);
-            }
+            using HttpClient httpClient = new HttpClient();
+            Console.WriteLine("Deleting " + stream.Id + " Stream");
+            HttpResponseMessage responseDeleteStream =
+                await httpClient.DeleteAsync($"http://localhost:{port}/api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{stream.Id}");
+            CheckIfResponseWasSuccessful(responseDeleteStream);
         }
 
         private static async Task DeleteType(SdsType type)
         {
-            using (HttpClient httpClient = new HttpClient())
-            {
-                Console.WriteLine("Deleting " + type.Id + " Type");
-                HttpResponseMessage responseDeleteType =
-                    await httpClient.DeleteAsync($"http://localhost:{port}/api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Types/{type.Id}");
-                CheckIfResponseWasSuccessful(responseDeleteType);
-            }
+            using HttpClient httpClient = new HttpClient();
+            Console.WriteLine("Deleting " + type.Id + " Type");
+            HttpResponseMessage responseDeleteType =
+                await httpClient.DeleteAsync($"http://localhost:{port}/api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Types/{type.Id}");
+            CheckIfResponseWasSuccessful(responseDeleteType);
         }
 
         private static async Task<SdsStream> CreateStream(SdsType type, string id, string name) 
         {
-            using (HttpClient httpClient = new HttpClient())
+            using HttpClient httpClient = new HttpClient();
+            SdsStream stream = new SdsStream
             {
-                SdsStream stream = new SdsStream
-                {
-                    TypeId = type.Id,
-                    Id = id,
-                    Name = name
-                };
-                Console.WriteLine("Creating " + stream.Id + " Stream");
-                StringContent stringStream = new StringContent(JsonSerializer.Serialize(stream));
-                HttpResponseMessage responseCreateStream =
-                    await httpClient.PostAsync($"http://localhost:{port}/api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{stream.Id}", stringStream);
-                CheckIfResponseWasSuccessful(responseCreateStream);
-                return stream;
-            }
+                TypeId = type.Id,
+                Id = id,
+                Name = name
+            };
+            Console.WriteLine("Creating " + stream.Id + " Stream");
+            StringContent stringStream = new StringContent(JsonSerializer.Serialize(stream));
+            HttpResponseMessage responseCreateStream =
+                await httpClient.PostAsync($"http://localhost:{port}/api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{stream.Id}", stringStream);
+            CheckIfResponseWasSuccessful(responseCreateStream);
+            return stream;
         }
 
         private static async Task CreateType(SdsType type)
         {
-            using (HttpClient httpClient = new HttpClient())
+            using HttpClient httpClient = new HttpClient();
+            Console.WriteLine("Creating " + type.Id + " Type");
+            StringContent stringType = new StringContent(JsonSerializer.Serialize(type));
+            HttpResponseMessage responseType =
+                await httpClient.PostAsync($"http://localhost:{port}/api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Types/{type.Id}", stringType);
+            CheckIfResponseWasSuccessful(responseType);
+        }
+
+        private static async Task<List<SineData>> IngressSineData(SdsStream stream, string timestamp, int numberOfEvents)
+        {
+            using HttpClient httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Add("Accept-Encoding", "gzip");
+            Console.WriteLine("Ingressing data from " + stream.Id + " stream");
+            var response =
+                await httpClient.GetAsync($"http://localhost:{port}/api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{stream.Id}/Data?startIndex={timestamp}&count={numberOfEvents}");
+            CheckIfResponseWasSuccessful(response);
+            var responseBody = await response.Content.ReadAsStreamAsync();
+            // since the return values are in gzip, they must be decoded
+            var dataDestination = new MemoryStream();
+            using (var decompressor = (Stream)new GZipStream(responseBody, CompressionMode.Decompress, true))
             {
-                Console.WriteLine("Creating " + type.Id + " Type");
-                StringContent stringType = new StringContent(JsonSerializer.Serialize(type));
-                HttpResponseMessage responseType = 
-                    await httpClient.PostAsync($"http://localhost:{port}/api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Types/{type.Id}", stringType);
-                CheckIfResponseWasSuccessful(responseType);
+                decompressor.CopyToAsync(dataDestination).Wait();
+            }
+            dataDestination.Seek(0, SeekOrigin.Begin);
+            var requestContent = dataDestination;
+            var ms = requestContent;
+            var returnData = new List<SineData>();
+            using (var sr = new StreamReader(ms))
+            {
+                returnData = await JsonSerializer.DeserializeAsync<List<SineData>>(ms);
+            }
+            return returnData;
+        }
+
+        private static async Task<string> IngressSummaryData(SdsStream stream, string startTimestamp, string endTimestamp)
+        {
+            using HttpClient httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Add("Accept-Encoding", "gzip");
+            var edsDataAggregationIngress =
+                                   await httpClient.GetAsync($"http://localhost:{port}/api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{stream.Id}" +
+                                   $"/Data/Summaries?startIndex={startTimestamp}&endIndex={endTimestamp}&count=1");
+            CheckIfResponseWasSuccessful(edsDataAggregationIngress);
+            var responseBodyDataAggregation = await edsDataAggregationIngress.Content.ReadAsStreamAsync();
+            // since response is gzipped, it must be decoded
+            var destinationAggregatedData = new MemoryStream();
+            using (var decompressor = (Stream)new GZipStream(responseBodyDataAggregation, CompressionMode.Decompress, true))
+            {
+                decompressor.CopyToAsync(destinationAggregatedData).Wait();
+            }
+            destinationAggregatedData.Seek(0, SeekOrigin.Begin);
+            var requestContentAggregatedData = destinationAggregatedData;
+
+            using (var sr = new StreamReader(requestContentAggregatedData))
+            {
+                var returnDataAggregation = await JsonSerializer.DeserializeAsync<object>(requestContentAggregatedData);
+                string stringReturn = returnDataAggregation.ToString();
+                return stringReturn;
             }
         }
 
         private static async Task WriteDataToStream(List<SineData> list, SdsStream stream)
         {
-            using (HttpClient httpClient = new HttpClient())
-            {
-                Console.WriteLine("Writing Data to " + stream.Id + " stream");
-                StringContent serializedData = new StringContent(JsonSerializer.Serialize(list));
-                HttpResponseMessage responseWriteDataToStream =
-                    await httpClient.PostAsync($"http://localhost:{port}/api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{stream.Id}/Data", serializedData);
-                CheckIfResponseWasSuccessful(responseWriteDataToStream); 
-            }
+            using HttpClient httpClient = new HttpClient();
+            Console.WriteLine("Writing Data to " + stream.Id + " stream");
+            StringContent serializedData = new StringContent(JsonSerializer.Serialize(list));
+            HttpResponseMessage responseWriteDataToStream =
+                await httpClient.PostAsync($"http://localhost:{port}/api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{stream.Id}/Data", serializedData);
+            CheckIfResponseWasSuccessful(responseWriteDataToStream);
         }
 
         private static async Task WriteDataToStream(AggregateData data, SdsStream stream)
         {
-            using (HttpClient httpClient = new HttpClient())
-            {
-                List<AggregateData> dataList = new List<AggregateData>();
-                dataList.Add(data);
-                Console.WriteLine("Writing Data to " + stream.Id + " stream");
-                StringContent serializedData = new StringContent(JsonSerializer.Serialize(dataList));
-                HttpResponseMessage responseWriteDataToStream =
-                    await httpClient.PostAsync($"http://localhost:{port}/api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{stream.Id}/Data", serializedData);
-                CheckIfResponseWasSuccessful(responseWriteDataToStream);
-            }
+            using HttpClient httpClient = new HttpClient();
+            List<AggregateData> dataList = new List<AggregateData>();
+            dataList.Add(data);
+            Console.WriteLine("Writing Data to " + stream.Id + " stream");
+            StringContent serializedData = new StringContent(JsonSerializer.Serialize(dataList));
+            HttpResponseMessage responseWriteDataToStream =
+                await httpClient.PostAsync($"http://localhost:{port}/api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{stream.Id}/Data", serializedData);
+            CheckIfResponseWasSuccessful(responseWriteDataToStream);
         }
 
         private static SdsTypeProperty CreateSdsTypePropertyOfTypeDouble(string idAndName, bool isKey)
