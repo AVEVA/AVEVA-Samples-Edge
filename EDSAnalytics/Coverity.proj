@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="15.0"
+  DefaultTargets="CoverityAnalysis">
+  <!-- Add Binscope to DefaultTargest to also generate Binscope output in this project.
+    DefaultTargets="InitializeProperties;CoverityAnalysis;Binscope"-->
+
+  <PropertyGroup>
+
+    <!-- Customize for your Solution here -->
+    <SolutionDir>$(MSBuildProjectDirectory)</SolutionDir> <!--The location of the proj file and solution/sln are configured to be the same.-->
+    <SolutionPath>$(SolutionDir)\EDSFilter.sln</SolutionPath>
+    <CoverityBinPath>C:\Program Files\Coverity\Coverity Static Analysis\bin\</CoverityBinPath>
+    <CoverityStreamName>EDS-Sample</CoverityStreamName>
+    <KeyfilePath>$(USERPROFILE)\documents\coverity\keyfile</KeyfilePath>
+    <!-- Follow instructions to build keyfile and identify location here. -->
+    <CoverityWorkingDirectory>$(SolutionDir)\coverity</CoverityWorkingDirectory>
+    <CoverityHost>covertphl.osisoft.int</CoverityHost>
+    <!--<CoverityHost>covertOak.osisoft.int</CoverityHost> for San Leandro -->
+	<DefaultBuildConfiguration>Release</DefaultBuildConfiguration>
+  </PropertyGroup>
+  
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props"
+    Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+    
+  <Target Name="InitializeProperties">
+    <ConvertToAbsolutePath Paths="." Condition="$(SolutionDir) == ''">
+      <Output TaskParameter="AbsolutePaths" PropertyName="SolutionDir" />
+    </ConvertToAbsolutePath>
+    <CreateTempDirectory Condition="$(OutDir) == ''">
+      <Output TaskParameter="CreatedDirectory" PropertyName="OutDir" />
+    </CreateTempDirectory>
+  </Target>
+
+  <Target Name="BinScope">
+    <Exec Command="powershell -NoProfile -ExecutionPolicy unrestricted -File &quot;$(SolutionDir)\binscope.ps1&quot; -SolutionDirectory &quot;$(SolutionDir)&quot; -OutputDirectory &quot;$(OutDir)&quot;" />
+  </Target>
+
+  <Target Name="CoverityAnalysis">
+    <PropertyGroup>
+      <CoverityIntermediate>$(CoverityWorkingDirectory)\coverity-intermediate</CoverityIntermediate>
+      <CoverityCompileOutput>$(CoverityWorkingDirectory)\coverity-compile-output</CoverityCompileOutput>
+      <CoverityOutput>$(CoverityWorkingDirectory)\bin\Coverity</CoverityOutput>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <DirectoriesToDelete Include="$(CoverityIntermediate);$(CoverityCompileOutput);$(CoverityOutput)" />
+    </ItemGroup>
+    
+    <RemoveDir Directories="@(DirectoriesToDelete)"/>
+    
+    <!--cov-build options to consider to fail build on any warnings: 
+           - -return-emit-failures
+           help: https://covertphl.osisoft.int:8443/docs/en/webhelp/docs/bk08rn01re04.html
+           Multibook Help (search help): https://covertphl.osisoft.int:8443/docs/en/webhelp/docs/indexpt01.html
+      -->
+    <Exec Command="&quot;$(CoverityBinPath)cov-build&quot; --parse-error-threshold 100 --verbose 4 --dir &quot;$(CoverityIntermediate)&quot; &quot;$(MSBuildBinPath)\msbuild.exe&quot; &quot;$(MSBuildThisFileDirectory)$(MsbuildFile)&quot; $(BuildTarget) /p:Configuration=&quot;$(DefaultBuildConfiguration)&quot;  /p:OutDir=&quot;$(CoverityCompileOutput)&quot;" />
+    <!--cov-analyze options to consider to use multiple CPU's on your build server: 
+           - -jobs
+           - -override-worker-limit
+           help: https://covertphl.osisoft.int:8443/docs/en/webhelp/docs/bk08rn01re01.html
+           Multibook Help (search help): https://covertphl.osisoft.int:8443/docs/en/webhelp/docs/indexpt01.html
+      -->
+    <Exec Command="&quot;$(CoverityBinPath)cov-analyze&quot; --all --webapp-security --dir &quot;$(CoverityIntermediate)&quot;" />
+    <Exec Command="&quot;$(CoverityBinPath)cov-commit-defects&quot; --stream &quot;$(CoverityStreamName)&quot; --host $(CoverityHost) --https-port 8443 --auth-key-file &quot;$(KeyfilePath)&quot; --dir &quot;$(CoverityIntermediate)&quot;"
+          ContinueOnError="true">
+      <Output TaskParameter="ExitCode" PropertyName="CoverityCommitExitCode" />
+    </Exec>
+    <Exec Command="&quot;$(CoverityBinPath)cov-format-errors&quot; --html-output &quot;$(CoverityOutput)&quot; --dir &quot;$(CoverityIntermediate)&quot;" />
+    <XPathLookup XmlInputPath="$(CoverityOutput)\summary.xml" XPathQuery="string(//error[checker = 'Total']/num)">
+      <Output TaskParameter="Result" PropertyName="CoverityDefectCount" />
+    </XPathLookup>
+    <Copy SourceFiles="$(CoverityIntermediate)\build-log.txt" DestinationFolder="$(CoverityOutput)" />
+    <Warning Text="Error $(CoverityCommitExitCode) committing Coverity defects." Condition="'$(CoverityCommitExitCode)' != '0'" />
+    
+
+<!-- Only include this Error if you want to fail your build if any static analysis errors were found (for gating). This practice was used by the PI Web API team, but is not recommended: 
+    <Error Text="Coverity analysis resulted in $(CoverityDefectCount) errors." Condition="'$(CoverityDefectCount)' != '0'" /> -->
+    </Target>
+
+  <UsingTask
+    TaskName="XPathLookup"
+    TaskFactory="CodeTaskFactory"
+    AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
+
+    <ParameterGroup>
+      <XmlInputPath Required="true" />
+      <XPathQuery Required="true" />
+      <Result Output="true" />
+    </ParameterGroup>
+
+    <Task>
+      <Reference Include="System.Xml" />
+      <Using Namespace="System" />
+      <Using Namespace="System.Xml" />
+      <Using Namespace="System.Xml.XPath" />
+
+      <Code Type="Fragment" Language="cs">
+        <![CDATA[
+          XmlReaderSettings settings = new XmlReaderSettings();
+          settings.DtdProcessing = DtdProcessing.Ignore;
+          XmlReader reader = XmlReader.Create(XmlInputPath, settings);
+
+          XmlDocument document = new XmlDocument();
+          document.Load(reader);
+
+          XPathNavigator navigator = document.CreateNavigator();
+          Result = (string)navigator.Evaluate(XPathQuery);
+        ]]>
+      </Code>
+    </Task>
+  </UsingTask>
+
+  <UsingTask
+  TaskName="CreateTempDirectory"
+  TaskFactory="CodeTaskFactory"
+  AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
+
+    <ParameterGroup>
+      <CreatedDirectory Output="true"/>
+    </ParameterGroup>
+
+    <Task>
+      <Using Namespace="System"/>
+      <Using Namespace="System.IO"/>
+
+      <Code Type="Fragment" Language="cs">
+        <![CDATA[
+          CreatedDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+          Directory.CreateDirectory(CreatedDirectory);
+        ]]>
+      </Code>
+    </Task>
+  </UsingTask>
+</Project>
