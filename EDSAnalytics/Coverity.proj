@@ -8,7 +8,7 @@
 
     <!-- Customize for your Solution here -->
     <SolutionDir>$(MSBuildProjectDirectory)</SolutionDir> <!--The location of the proj file and solution/sln are configured to be the same.-->
-    <SolutionPath>$(SolutionDir)\EDSFilter.sln</SolutionPath>
+    <SolutionPath>$(SolutionDir)\EDSAnalytics.sln</SolutionPath>
     <CoverityBinPath>C:\Program Files\Coverity\Coverity Static Analysis\bin\</CoverityBinPath>
     <CoverityStreamName>EDS-Sample</CoverityStreamName>
     <KeyfilePath>$(USERPROFILE)\documents\coverity\keyfile</KeyfilePath>

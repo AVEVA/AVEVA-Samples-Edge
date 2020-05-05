@@ -41,7 +41,7 @@ namespace EDSAnalytics
             {
                 httpClient.DefaultRequestHeaders.Add("Accept-Encoding", "gzip");
                 try
-                {
+                {   // ====================== Data Filtering portion ======================
                     Console.WriteLine();
                     Console.WriteLine("================= Data Filtering =================");
                     // Step 1 - create SineWave type
