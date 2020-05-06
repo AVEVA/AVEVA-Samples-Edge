@@ -168,19 +168,32 @@ namespace EDSAnalytics
                     string summaryData = await IngressSummaryData(sineWaveStream, calculatedData.Timestamp, firstTimestamp.AddMinutes(numberOfEvents).ToString("o"));
                     summaryData = summaryData.TrimStart(new char[] { '[' }).TrimEnd(new char[] { ']' });
                     var data = JObject.Parse(summaryData)["Summaries"].ToString();
-                    var meanData = JObject.Parse(data)["Mean"].ToString();
-                    var valueData = JObject.Parse(meanData)["Value"].ToString();
+                    string meanObject = JObject.Parse(data)["Mean"].ToString();
+                    string minObject = JObject.Parse(data)["Minimum"].ToString();
+                    string maxObject = JObject.Parse(data)["Maximum"].ToString();
+                    string rangeObject = JObject.Parse(data)["Range"].ToString();
+                    double summaryMean = Convert.ToDouble(JObject.Parse(meanObject)["Value"].ToString());
+                    double summaryMinimum = Convert.ToDouble(JObject.Parse(minObject)["Value"].ToString());
+                    double summaryMaximum = Convert.ToDouble(JObject.Parse(maxObject)["Value"].ToString());
+                    double summaryRange = Convert.ToDouble(JObject.Parse(rangeObject)["Value"].ToString());
+                    Console.WriteLine("Mean = " + summaryMean);
+                    Console.WriteLine("Min = " + summaryMinimum);
+                    Console.WriteLine("Max = " + summaryMaximum);
+                    Console.WriteLine("Range = " + summaryRange);
+                    /*var valueData = Convert.ToDouble(JObject.Parse(meanData)["Value"].ToString()); //.ToString();                    
                     Console.WriteLine();
-                    Console.WriteLine(valueData);
+                    Console.WriteLine(msg);
                     Console.WriteLine();
+                    */
+
 
                     AggregateData edsApi = new AggregateData
                     {
                         Timestamp = firstTimestamp.ToString("o"),
-                        Mean = GetValue(summaryData, "Mean"),
-                        Minimum = GetValue(summaryData, "Minimum"),
-                        Maximum = GetValue(summaryData, "Maximum"),
-                        Range = GetValue(summaryData, "Range")
+                        Mean = summaryMean,
+                        Minimum = summaryMinimum,
+                        Maximum = summaryMaximum,
+                        Range = summaryMaximum
                     };
                     await WriteDataToStream(edsApi, edsApiAggregatedDataStream);
 
@@ -284,6 +297,7 @@ namespace EDSAnalytics
         {
             using HttpClient httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Add("Accept-Encoding", "gzip");
+            Console.WriteLine("Ingressing Data from " + stream.Id + " Stream Summary");
             var responseIngress =
                 await httpClient.GetAsync($"http://localhost:{port}/api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/" +
                 $"{stream.Id}/Data/Summaries?startIndex={startTimestamp}&endIndex={endTimestamp}&count=1");
@@ -346,6 +360,7 @@ namespace EDSAnalytics
             return property;
         }
 
+        /*
         private static double GetValue(string jsn, string property)
         {
             int meanStartIndex = jsn.IndexOf(property);
@@ -354,6 +369,7 @@ namespace EDSAnalytics
             Console.WriteLine(property + " = " + meanDouble);
             return meanDouble;
         }
+        */
 
     }
 }
