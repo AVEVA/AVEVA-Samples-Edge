@@ -232,7 +232,7 @@ namespace EDSAnalytics
 
         private static async Task DeleteStream(SdsStream stream)
         {
-            using HttpClient httpClient = new HttpClient();
+            HttpClient httpClient = new HttpClient();
             Console.WriteLine("Deleting " + stream.Id + " Stream");
             HttpResponseMessage responseDeleteStream =
                 await httpClient.DeleteAsync($"http://localhost:{port}/api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{stream.Id}");
@@ -241,7 +241,7 @@ namespace EDSAnalytics
 
         private static async Task DeleteType(SdsType type)
         {
-            using HttpClient httpClient = new HttpClient();
+            HttpClient httpClient = new HttpClient();
             Console.WriteLine("Deleting " + type.Id + " Type");
             HttpResponseMessage responseDeleteType =
                 await httpClient.DeleteAsync($"http://localhost:{port}/api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Types/{type.Id}");
@@ -250,7 +250,7 @@ namespace EDSAnalytics
 
         private static async Task<SdsStream> CreateStream(SdsType type, string id, string name) 
         {
-            using HttpClient httpClient = new HttpClient();
+            HttpClient httpClient = new HttpClient();
             SdsStream stream = new SdsStream
             {
                 TypeId = type.Id,
@@ -267,17 +267,18 @@ namespace EDSAnalytics
 
         private static async Task CreateType(SdsType type)
         {
-            using HttpClient httpClient = new HttpClient();
+            HttpClient httpClient = new HttpClient();
             Console.WriteLine("Creating " + type.Id + " Type");
             StringContent stringType = new StringContent(JsonSerializer.Serialize(type));
             HttpResponseMessage responseType =
                 await httpClient.PostAsync($"http://localhost:{port}/api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Types/{type.Id}", stringType);
             CheckIfResponseWasSuccessful(responseType);
+
         }
 
         private static async Task<List<SineData>> IngressSineData(SdsStream stream, string timestamp, int numberOfEvents)
         {
-            using HttpClient httpClient = new HttpClient();
+            HttpClient httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Add("Accept-Encoding", "gzip");
             Console.WriteLine("Ingressing data from " + stream.Id + " stream");
             var responseIngress =
@@ -295,7 +296,7 @@ namespace EDSAnalytics
 
         private static async Task<string> IngressSummaryData(SdsStream stream, string startTimestamp, string endTimestamp)
         {
-            using HttpClient httpClient = new HttpClient();
+            HttpClient httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Add("Accept-Encoding", "gzip");
             Console.WriteLine("Ingressing Data from " + stream.Id + " Stream Summary");
             var responseIngress =
@@ -324,7 +325,7 @@ namespace EDSAnalytics
 
         private static async Task WriteDataToStream(List<SineData> list, SdsStream stream)
         {
-            using HttpClient httpClient = new HttpClient();
+            HttpClient httpClient = new HttpClient();
             Console.WriteLine("Writing Data to " + stream.Id + " stream");
             StringContent serializedData = new StringContent(JsonSerializer.Serialize(list));
             HttpResponseMessage responseWriteDataToStream =
@@ -334,7 +335,7 @@ namespace EDSAnalytics
 
         private static async Task WriteDataToStream(AggregateData data, SdsStream stream)
         {
-            using HttpClient httpClient = new HttpClient();
+            HttpClient httpClient = new HttpClient();
             List<AggregateData> dataList = new List<AggregateData>();
             dataList.Add(data);
             Console.WriteLine("Writing Data to " + stream.Id + " stream");
