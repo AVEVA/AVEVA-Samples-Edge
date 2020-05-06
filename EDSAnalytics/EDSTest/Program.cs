@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Text.Json;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Json;
+using Newtonsoft.Json.Linq;
 
 namespace EDSAnalytics
 {
@@ -22,13 +23,12 @@ namespace EDSAnalytics
         {
             MainAsync().GetAwaiter().GetResult();
         }
-        public static async Task<bool> MainAsync(bool test = false)
+        public static async Task<bool> MainAsync()
         {
             Console.WriteLine("Getting configuration from appsettings.json");
             IConfigurationBuilder builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json");
-                // .AddJsonFile("appsettings.test.json", optional: true);
             IConfiguration configuration = builder.Build();
 
             // ==== Client constants ====
@@ -165,14 +165,22 @@ namespace EDSAnalytics
                     SdsStream edsApiAggregatedDataStream = CreateStream(aggregatedDataType, "EdsApiAggregatedData", "EdsApiAggregatedData").Result;
 
                     // Step 11 - Use EDS’s standard data aggregate API calls to ingress aggregation data calculated by EDS
-                    string stringReturn = await IngressSummaryData(sineWaveStream, calculatedData.Timestamp, firstTimestamp.AddMinutes(numberOfEvents).ToString("o"));
+                    string summaryData = await IngressSummaryData(sineWaveStream, calculatedData.Timestamp, firstTimestamp.AddMinutes(numberOfEvents).ToString("o"));
+                    summaryData = summaryData.TrimStart(new char[] { '[' }).TrimEnd(new char[] { ']' });
+                    var data = JObject.Parse(summaryData)["Summaries"].ToString();
+                    var meanData = JObject.Parse(data)["Mean"].ToString();
+                    var valueData = JObject.Parse(meanData)["Value"].ToString();
+                    Console.WriteLine();
+                    Console.WriteLine(valueData);
+                    Console.WriteLine();
+
                     AggregateData edsApi = new AggregateData
                     {
                         Timestamp = firstTimestamp.ToString("o"),
-                        Mean = GetValue(stringReturn, "Mean"),
-                        Minimum = GetValue(stringReturn, "Minimum"),
-                        Maximum = GetValue(stringReturn, "Maximum"),
-                        Range = GetValue(stringReturn, "Range")
+                        Mean = GetValue(summaryData, "Mean"),
+                        Minimum = GetValue(summaryData, "Minimum"),
+                        Maximum = GetValue(summaryData, "Maximum"),
+                        Range = GetValue(summaryData, "Range")
                     };
                     await WriteDataToStream(edsApi, edsApiAggregatedDataStream);
 
@@ -185,8 +193,7 @@ namespace EDSAnalytics
                     await DeleteStream(calculatedAggregatedDataStream);
                     await DeleteStream(edsApiAggregatedDataStream);
                     await DeleteType(sineWaveType);
-                    await DeleteType(aggregatedDataType);
-                    
+                    await DeleteType(aggregatedDataType);                    
                 }
                 catch (Exception e)
                 {
@@ -260,11 +267,11 @@ namespace EDSAnalytics
             using HttpClient httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Add("Accept-Encoding", "gzip");
             Console.WriteLine("Ingressing data from " + stream.Id + " stream");
-            var response =
+            var responseIngress =
                 await httpClient.GetAsync($"http://localhost:{port}/api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/" +
                 $"{stream.Id}/Data?startIndex={timestamp}&count={numberOfEvents}");
-            CheckIfResponseWasSuccessful(response);
-            MemoryStream ms = await DecompressGzip(response);
+            CheckIfResponseWasSuccessful(responseIngress);
+            MemoryStream ms = await DecompressGzip(responseIngress);
             var returnData = new List<SineData>();
             using (var sr = new StreamReader(ms))
             {
@@ -277,29 +284,28 @@ namespace EDSAnalytics
         {
             using HttpClient httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Add("Accept-Encoding", "gzip");
-            var response =
+            var responseIngress =
                 await httpClient.GetAsync($"http://localhost:{port}/api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/" +
                 $"{stream.Id}/Data/Summaries?startIndex={startTimestamp}&endIndex={endTimestamp}&count=1");
-            CheckIfResponseWasSuccessful(response);
-            MemoryStream ms = await DecompressGzip(response);
+            CheckIfResponseWasSuccessful(responseIngress);
+            MemoryStream ms = await DecompressGzip(responseIngress);
             using (var sr = new StreamReader(ms))
             {
-                var returnDataAggregation = await JsonSerializer.DeserializeAsync<object>(ms);
-                string stringReturn = returnDataAggregation.ToString();
-                return stringReturn;
+                var objectSummaryData = await JsonSerializer.DeserializeAsync<object>(ms);
+                return objectSummaryData.ToString();
             }
         }
 
         private static async Task<MemoryStream> DecompressGzip(HttpResponseMessage httpMessage)
         {
             var response = await httpMessage.Content.ReadAsStreamAsync();
-            var destinationAggregatedData = new MemoryStream();
+            var destination = new MemoryStream();
             using (var decompressor = (Stream)new GZipStream(response, CompressionMode.Decompress, true))
             {
-                decompressor.CopyToAsync(destinationAggregatedData).Wait();
+                decompressor.CopyToAsync(destination).Wait();
             }
-            destinationAggregatedData.Seek(0, SeekOrigin.Begin);
-            return destinationAggregatedData;
+            destination.Seek(0, SeekOrigin.Begin);
+            return destination;
         }
 
         private static async Task WriteDataToStream(List<SineData> list, SdsStream stream)
