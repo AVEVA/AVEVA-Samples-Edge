@@ -78,7 +78,7 @@ namespace EDSAnalytics
                     List<SineData> waveList = new List<SineData>();
                     DateTime firstTimestamp = new DateTime();
                     firstTimestamp = DateTime.UtcNow;
-                    // numberOfEvents must be a integer > 1
+                    // numberOfEvents must be an integer > 1
                     int numberOfEvents = 100;
                     for (int i = 0; i < numberOfEvents; i++)
                     {
@@ -165,48 +165,26 @@ namespace EDSAnalytics
                     SdsStream edsApiAggregatedDataStream = CreateStream(aggregatedDataType, "EdsApiAggregatedData", "EdsApiAggregatedData").Result;
 
                     // Step 11 - Use EDS’s standard data aggregate API calls to ingress aggregation data calculated by EDS
-                    /*
-                    var edsDataAggregationIngress =
-                        await httpClient.GetAsync($"http://localhost:{port}/api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{sineWaveStream.Id}" +
-                        $"/Data/Summaries?startIndex={calculatedData.Timestamp}&endIndex={firstTimestamp.AddMinutes(numberOfEvents).ToString("o")}&count=1");
-                    CheckIfResponseWasSuccessful(edsDataAggregationIngress);
-                    var responseBodyDataAggregation = await edsDataAggregationIngress.Content.ReadAsStreamAsync();
-                    // since response is gzipped, it must be decoded
-                    var destinationAggregatedData = new MemoryStream();
-                    using (var decompressor = (Stream)new GZipStream(responseBodyDataAggregation, CompressionMode.Decompress, true))
-                    {
-                        decompressor.CopyToAsync(destinationAggregatedData).Wait();
-                    }
-                    destinationAggregatedData.Seek(0, SeekOrigin.Begin);
-                    var requestContentAggregatedData = destinationAggregatedData;
-
-                    using (var sr = new StreamReader(requestContentAggregatedData))
-                    {
-                        var returnDataAggregation = await JsonSerializer.DeserializeAsync<object>(requestContentAggregatedData);
-                        string stringReturn = returnDataAggregation.ToString();
-                        // create a new aggregateData object from the api call
-                        */
                     string stringReturn = await IngressSummaryData(sineWaveStream, calculatedData.Timestamp, firstTimestamp.AddMinutes(numberOfEvents).ToString("o"));
-                        AggregateData edsApi = new AggregateData
-                        {
-                            Timestamp = firstTimestamp.ToString("o"),
-                            Mean = GetValue(stringReturn, "Mean"),
-                            Minimum = GetValue(stringReturn, "Minimum"),
-                            Maximum = GetValue(stringReturn, "Maximum"),
-                            Range = GetValue(stringReturn, "Range")
-                        };
-                        await WriteDataToStream(edsApi, edsApiAggregatedDataStream);
-                    //}
+                    AggregateData edsApi = new AggregateData
+                    {
+                        Timestamp = firstTimestamp.ToString("o"),
+                        Mean = GetValue(stringReturn, "Mean"),
+                        Minimum = GetValue(stringReturn, "Minimum"),
+                        Maximum = GetValue(stringReturn, "Maximum"),
+                        Range = GetValue(stringReturn, "Range")
+                    };
+                    await WriteDataToStream(edsApi, edsApiAggregatedDataStream);
 
                     Console.WriteLine();
                     Console.WriteLine("==================== Clean-Up =====================");
                     
                     // Step 12 - Delete Streams and Types
                     await DeleteStream(sineWaveStream);
-                    // await DeleteStream(filteredSineWaveStream);
+                    await DeleteStream(filteredSineWaveStream);
                     await DeleteStream(calculatedAggregatedDataStream);
                     await DeleteStream(edsApiAggregatedDataStream);
-                    // await DeleteType(sineWaveType);
+                    await DeleteType(sineWaveType);
                     await DeleteType(aggregatedDataType);
                     
                 }
@@ -283,18 +261,10 @@ namespace EDSAnalytics
             httpClient.DefaultRequestHeaders.Add("Accept-Encoding", "gzip");
             Console.WriteLine("Ingressing data from " + stream.Id + " stream");
             var response =
-                await httpClient.GetAsync($"http://localhost:{port}/api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{stream.Id}/Data?startIndex={timestamp}&count={numberOfEvents}");
+                await httpClient.GetAsync($"http://localhost:{port}/api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/" +
+                $"{stream.Id}/Data?startIndex={timestamp}&count={numberOfEvents}");
             CheckIfResponseWasSuccessful(response);
-            var responseBody = await response.Content.ReadAsStreamAsync();
-            // since the return values are in gzip, they must be decoded
-            var dataDestination = new MemoryStream();
-            using (var decompressor = (Stream)new GZipStream(responseBody, CompressionMode.Decompress, true))
-            {
-                decompressor.CopyToAsync(dataDestination).Wait();
-            }
-            dataDestination.Seek(0, SeekOrigin.Begin);
-            var requestContent = dataDestination;
-            var ms = requestContent;
+            MemoryStream ms = await DecompressGzip(response);
             var returnData = new List<SineData>();
             using (var sr = new StreamReader(ms))
             {
@@ -307,26 +277,29 @@ namespace EDSAnalytics
         {
             using HttpClient httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Add("Accept-Encoding", "gzip");
-            var edsDataAggregationIngress =
-                                   await httpClient.GetAsync($"http://localhost:{port}/api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/{stream.Id}" +
-                                   $"/Data/Summaries?startIndex={startTimestamp}&endIndex={endTimestamp}&count=1");
-            CheckIfResponseWasSuccessful(edsDataAggregationIngress);
-            var responseBodyDataAggregation = await edsDataAggregationIngress.Content.ReadAsStreamAsync();
-            // since response is gzipped, it must be decoded
+            var response =
+                await httpClient.GetAsync($"http://localhost:{port}/api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Streams/" +
+                $"{stream.Id}/Data/Summaries?startIndex={startTimestamp}&endIndex={endTimestamp}&count=1");
+            CheckIfResponseWasSuccessful(response);
+            MemoryStream ms = await DecompressGzip(response);
+            using (var sr = new StreamReader(ms))
+            {
+                var returnDataAggregation = await JsonSerializer.DeserializeAsync<object>(ms);
+                string stringReturn = returnDataAggregation.ToString();
+                return stringReturn;
+            }
+        }
+
+        private static async Task<MemoryStream> DecompressGzip(HttpResponseMessage httpMessage)
+        {
+            var response = await httpMessage.Content.ReadAsStreamAsync();
             var destinationAggregatedData = new MemoryStream();
-            using (var decompressor = (Stream)new GZipStream(responseBodyDataAggregation, CompressionMode.Decompress, true))
+            using (var decompressor = (Stream)new GZipStream(response, CompressionMode.Decompress, true))
             {
                 decompressor.CopyToAsync(destinationAggregatedData).Wait();
             }
             destinationAggregatedData.Seek(0, SeekOrigin.Begin);
-            var requestContentAggregatedData = destinationAggregatedData;
-
-            using (var sr = new StreamReader(requestContentAggregatedData))
-            {
-                var returnDataAggregation = await JsonSerializer.DeserializeAsync<object>(requestContentAggregatedData);
-                string stringReturn = returnDataAggregation.ToString();
-                return stringReturn;
-            }
+            return destinationAggregatedData;
         }
 
         private static async Task WriteDataToStream(List<SineData> list, SdsStream stream)
