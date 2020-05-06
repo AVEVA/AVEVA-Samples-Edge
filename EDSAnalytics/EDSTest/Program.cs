@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using System.Text.Json;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Json;
-using Newtonsoft.Json.Linq;
 
 namespace EDSAnalytics
 {
@@ -167,33 +166,16 @@ namespace EDSAnalytics
                     // Step 11 - Use EDS’s standard data aggregate API calls to ingress aggregation data calculated by EDS
                     string summaryData = await IngressSummaryData(sineWaveStream, calculatedData.Timestamp, firstTimestamp.AddMinutes(numberOfEvents).ToString("o"));
                     summaryData = summaryData.TrimStart(new char[] { '[' }).TrimEnd(new char[] { ']' });
-                    var data = JObject.Parse(summaryData)["Summaries"].ToString();
-                    string meanObject = JObject.Parse(data)["Mean"].ToString();
-                    string minObject = JObject.Parse(data)["Minimum"].ToString();
-                    string maxObject = JObject.Parse(data)["Maximum"].ToString();
-                    string rangeObject = JObject.Parse(data)["Range"].ToString();
-                    double summaryMean = Convert.ToDouble(JObject.Parse(meanObject)["Value"].ToString());
-                    double summaryMinimum = Convert.ToDouble(JObject.Parse(minObject)["Value"].ToString());
-                    double summaryMaximum = Convert.ToDouble(JObject.Parse(maxObject)["Value"].ToString());
-                    double summaryRange = Convert.ToDouble(JObject.Parse(rangeObject)["Value"].ToString());
+                    // var data = JObject.Parse(summaryData)["Summaries"].ToString();
+
+                    var summaryMean = GetValue(summaryData, "Mean");
+                    var summaryMaximum = GetValue(summaryData, "Maximum");
+                    var summaryMinimum = GetValue(summaryData, "Minimum");
+                    var summaryRange = GetValue(summaryData, "Range");
                     Console.WriteLine("Mean = " + summaryMean);
                     Console.WriteLine("Min = " + summaryMinimum);
                     Console.WriteLine("Max = " + summaryMaximum);
                     Console.WriteLine("Range = " + summaryRange);
-                    /*var valueData = Convert.ToDouble(JObject.Parse(meanData)["Value"].ToString()); //.ToString();                    
-                    Console.WriteLine();
-                    Console.WriteLine(msg);
-                    Console.WriteLine();
-                    */
-                    /*
-                    string json = summaryData;
-                    using JsonDocument doc = JsonDocument.Parse(json)
-                    {
-                        doc.P
-                    }
-                    */
-                    
-
 
                     AggregateData edsApi = new AggregateData
                     {
@@ -316,6 +298,14 @@ namespace EDSAnalytics
             using (var sr = new StreamReader(ms))
             {
                 var objectSummaryData = await JsonSerializer.DeserializeAsync<object>(ms);
+                /* using var doc = JsonDocument.Parse(str);
+                foreach (var property in doc.RootElement.EnumerateObject())
+                {
+                    Console.WriteLine(property);
+                }
+                Console.WriteLine();
+                */
+
                 return objectSummaryData.ToString();
             }
         }
@@ -370,16 +360,22 @@ namespace EDSAnalytics
             return property;
         }
 
-        /*
-        private static double GetValue(string jsn, string property)
+        
+        private static double GetValue(string json, string property)
         {
-            int meanStartIndex = jsn.IndexOf(property);
-            // until reaches zero
-            double meanDouble = Convert.ToDouble(jsn.Substring(meanStartIndex + 11 + property.Length, 16));
-            Console.WriteLine(property + " = " + meanDouble);
-            return meanDouble;
+            using (JsonDocument document = JsonDocument.Parse(json))
+            {
+                JsonElement root = document.RootElement;
+                JsonElement studentsElement = root.GetProperty("Summaries");
+                if (studentsElement.TryGetProperty(property, out JsonElement gradeElement))
+                {
+                    if (gradeElement.TryGetProperty("Value", out JsonElement gradeElementTwo))
+                    {
+                        return Convert.ToDouble(gradeElementTwo.ToString());
+                    }
+                }
+                return 0;
+            }
         }
-        */
-
     }
 }
