@@ -214,7 +214,6 @@ namespace EDSAnalytics
                 }
                 finally
                 {
-                    configuration = null;
                     Console.WriteLine();
                     Console.WriteLine("Demo Application Ran Successfully!");
                 }
