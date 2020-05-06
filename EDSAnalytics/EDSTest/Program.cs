@@ -29,7 +29,7 @@ namespace EDSAnalytics
             IConfigurationBuilder builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json");
-            IConfiguration configuration = builder.Build();
+            var configuration = builder.Build();
 
             // ==== Client constants ====
             port = configuration["EDSPort"];
@@ -185,6 +185,15 @@ namespace EDSAnalytics
                     Console.WriteLine(msg);
                     Console.WriteLine();
                     */
+                    /*
+                    string json = summaryData;
+                    using JsonDocument doc = JsonDocument.Parse(json)
+                    {
+                        doc.P
+                    }
+                    */
+                    
+
 
                     AggregateData edsApi = new AggregateData
                     {
@@ -214,6 +223,7 @@ namespace EDSAnalytics
                 }
                 finally
                 {
+                    (configuration as IDisposable)?.Dispose();
                     Console.WriteLine();
                     Console.WriteLine("Demo Application Ran Successfully!");
                 }

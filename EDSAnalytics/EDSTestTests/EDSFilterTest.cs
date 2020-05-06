@@ -14,7 +14,7 @@ namespace EDSAnalyticsTest
         [Fact]
         public void Test1()
         {
-            Assert.True(EDSAnalytics.Program.MainAsync(true).Result);           
+            Assert.True(EDSAnalytics.Program.MainAsync().Result);           
         }
     }
 }
