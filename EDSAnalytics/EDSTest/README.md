@@ -20,9 +20,6 @@
 1. Load the .csproj in this directory
 2. Rebuild project
 3. Run it
-
-- If you want to see outputs from the program, put a breakpoint at the end of the main method and run in debug mode
-
 4. The outputs tell you which step has completed/ if an error has occurred 
 
 ### Using Command Line
@@ -38,9 +35,9 @@ dotnet run
 
 ### Using Visual Studio
 
-- Load the .csproj from the AuthorizationCodeFlowTest directory above this in Visual Studio
+- Load the .csproj from the EDSAnalytics directory above this in Visual Studio
 - Rebuild project
-- Open Test Explorer and make sure there is one test called EDSTestTests is showing
+- Open Test Explorer and make sure there is one test called EDSAnalyticsTest showing
 - Run the test
 
 ### Using Command Line
@@ -70,7 +67,7 @@ Step 2
 - Creates the SineWave stream using SDS.
 
 Step 3
-- New events are initialized with sine wave data ranging from -1 to 1. This data is sent to the SineWave stream using SDS
+- New events are initialized with sine wave data ranging from -1.0 to 1.0. This data is sent to the SineWave stream using SDS
 
 Step 4
 - Data from the SineWave stream is ingressed and stored in a list of SineWave objects. Since data is encoded using GZIP, some decoding is necessary.

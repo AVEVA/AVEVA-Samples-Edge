@@ -38,7 +38,6 @@ namespace EDSAnalytics
 
             using (HttpClient httpClient = new HttpClient())
             {
-                //httpClient.DefaultRequestHeaders.Add("Accept-Encoding", "gzip");
                 try
                 {   // ====================== Data Filtering portion ======================
                     Console.WriteLine();
@@ -146,10 +145,10 @@ namespace EDSAnalytics
                     var min = sineDataValues.Min();
                     var max = sineDataValues.Max();
                     var range = max - min;
-                    Console.WriteLine("Min = " + min);
-                    Console.WriteLine("Max = " + max);
-                    Console.WriteLine("Range = " + range);
                     Console.WriteLine("Mean = " + mean);
+                    Console.WriteLine("Maximum = " + max);
+                    Console.WriteLine("Minimum = " + min);
+                    Console.WriteLine("Range = " + range);
                     AggregateData calculatedData = new AggregateData
                     {
                         Timestamp = firstTimestamp.ToString("o"),
@@ -194,6 +193,7 @@ namespace EDSAnalytics
                 {
                     Console.WriteLine(e.Message);
                     throw e;
+
                 }
                 finally
                 {
