@@ -31,14 +31,14 @@ namespace EDSAnalytics
             var configuration = builder.Build();
 
             // ==== Client constants ====
-            port = configuration["EDSPort"];
-            tenantId = configuration["TenantId"];
-            namespaceId = configuration["NamespaceId"];
+            port = configuration["edsPort"];
+            tenantId = configuration["tenantId"];
+            namespaceId = configuration["namespaceId"];
             apiVersion = configuration["apiVersion"];
 
             using (HttpClient httpClient = new HttpClient())
             {
-                httpClient.DefaultRequestHeaders.Add("Accept-Encoding", "gzip");
+                //httpClient.DefaultRequestHeaders.Add("Accept-Encoding", "gzip");
                 try
                 {   // ====================== Data Filtering portion ======================
                     Console.WriteLine();
@@ -70,9 +70,9 @@ namespace EDSAnalytics
                     await CreateType(sineWaveType);
 
                     // Step 2 - Create SineWave stream        
-                    SdsStream sineWaveStream = CreateStream(sineWaveType, "SineWave", "SineWave").Result;
+                    SdsStream sineWaveStream = await CreateStream(sineWaveType, "SineWave", "SineWave");
 
-                    // Step 3 - Create events of SineData objects. The value property of the SineData object is intitialized to value between -1.0 and 1.0
+                    // Step 3 - Create events of SineData objects. The value property of the SineData object is intitialized to a value between -1.0 and 1.0
                     Console.WriteLine("Initializing SineData Events");
                     List<SineData> waveList = new List<SineData>();
                     DateTime firstTimestamp = new DateTime();
@@ -132,24 +132,24 @@ namespace EDSAnalytics
                     await CreateType(aggregatedDataType);
 
                     // Step 8 - Create CalculatedAggregatedData stream
-                    SdsStream calculatedAggregatedDataStream = CreateStream(aggregatedDataType, "CalculatedAggregatedData", "CalculatedAggregatedData").Result;
+                    SdsStream calculatedAggregatedDataStream = await CreateStream(aggregatedDataType, "CalculatedAggregatedData", "CalculatedAggregatedData");
 
-                    // Step 9 - Calculate mean, min, max, and range using c# libraries and send to DataAggregation Stream
+                    // Step 9 - Calculate mean, min, max, and range using c# libraries and send to the DataAggregation Stream
                     Console.WriteLine("Calculating mean, min, max, and range");
                     double mean = returnData.Average(rd => rd.Value);
-                    Console.WriteLine("Mean = " + mean);
-                    var values = new List<double>();
+                    var sineDataValues = new List<double>();
                     for (int i = 0; i < numberOfEvents; i++)
                     {
-                        values.Add(returnData[i].Value);
+                        sineDataValues.Add(returnData[i].Value);
                         numberOfValidValues++;
-                    }
-                    var min = values.Min();
-                    Console.WriteLine("Min = " + min);
-                    var max = values.Max();
-                    Console.WriteLine("Max = " + max);
+                    }                 
+                    var min = sineDataValues.Min();
+                    var max = sineDataValues.Max();
                     var range = max - min;
-                    Console.WriteLine("Range = " + range);         
+                    Console.WriteLine("Min = " + min);
+                    Console.WriteLine("Max = " + max);
+                    Console.WriteLine("Range = " + range);
+                    Console.WriteLine("Mean = " + mean);
                     AggregateData calculatedData = new AggregateData
                     {
                         Timestamp = firstTimestamp.ToString("o"),
@@ -163,20 +163,12 @@ namespace EDSAnalytics
                     // Step 10 - Create EdsApiAggregatedData stream
                     SdsStream edsApiAggregatedDataStream = CreateStream(aggregatedDataType, "EdsApiAggregatedData", "EdsApiAggregatedData").Result;
 
-                    // Step 11 - Use EDS’s standard data aggregate API calls to ingress aggregation data calculated by EDS
+                    // Step 11 - Use EDS’s standard data aggregate API calls to ingress aggregated data calculated by EDS and send to EdsApiAggregatedData stream
                     string summaryData = await IngressSummaryData(sineWaveStream, calculatedData.Timestamp, firstTimestamp.AddMinutes(numberOfEvents).ToString("o"));
-                    summaryData = summaryData.TrimStart(new char[] { '[' }).TrimEnd(new char[] { ']' });
-                    // var data = JObject.Parse(summaryData)["Summaries"].ToString();
-
-                    var summaryMean = GetValue(summaryData, "Mean");
-                    var summaryMaximum = GetValue(summaryData, "Maximum");
-                    var summaryMinimum = GetValue(summaryData, "Minimum");
-                    var summaryRange = GetValue(summaryData, "Range");
-                    Console.WriteLine("Mean = " + summaryMean);
-                    Console.WriteLine("Min = " + summaryMinimum);
-                    Console.WriteLine("Max = " + summaryMaximum);
-                    Console.WriteLine("Range = " + summaryRange);
-
+                    double summaryMean = GetValue(summaryData, "Mean");
+                    double summaryMaximum = GetValue(summaryData, "Maximum");
+                    double summaryMinimum = GetValue(summaryData, "Minimum");
+                    double summaryRange = GetValue(summaryData, "Range");
                     AggregateData edsApi = new AggregateData
                     {
                         Timestamp = firstTimestamp.ToString("o"),
@@ -186,7 +178,7 @@ namespace EDSAnalytics
                         Range = summaryMaximum
                     };
                     await WriteDataToStream(edsApi, edsApiAggregatedDataStream);
-
+ 
                     Console.WriteLine();
                     Console.WriteLine("==================== Clean-Up =====================");
                     
@@ -277,12 +269,10 @@ namespace EDSAnalytics
                 $"{stream.Id}/Data?startIndex={timestamp}&count={numberOfEvents}");
             CheckIfResponseWasSuccessful(responseIngress);
             MemoryStream ms = await DecompressGzip(responseIngress);
-            var returnData = new List<SineData>();
             using (var sr = new StreamReader(ms))
             {
-                returnData = await JsonSerializer.DeserializeAsync<List<SineData>>(ms);
+                return await JsonSerializer.DeserializeAsync<List<SineData>>(ms);
             }
-            return returnData;
         }
 
         private static async Task<string> IngressSummaryData(SdsStream stream, string startTimestamp, string endTimestamp)
@@ -298,15 +288,7 @@ namespace EDSAnalytics
             using (var sr = new StreamReader(ms))
             {
                 var objectSummaryData = await JsonSerializer.DeserializeAsync<object>(ms);
-                /* using var doc = JsonDocument.Parse(str);
-                foreach (var property in doc.RootElement.EnumerateObject())
-                {
-                    Console.WriteLine(property);
-                }
-                Console.WriteLine();
-                */
-
-                return objectSummaryData.ToString();
+                return objectSummaryData.ToString().TrimStart(new char[] { '[' }).TrimEnd(new char[] { ']' }); 
             }
         }
 
@@ -359,19 +341,19 @@ namespace EDSAnalytics
             };
             return property;
         }
-
-        
+     
         private static double GetValue(string json, string property)
         {
             using (JsonDocument document = JsonDocument.Parse(json))
             {
                 JsonElement root = document.RootElement;
-                JsonElement studentsElement = root.GetProperty("Summaries");
-                if (studentsElement.TryGetProperty(property, out JsonElement gradeElement))
+                JsonElement summaryElement = root.GetProperty("Summaries");
+                if (summaryElement.TryGetProperty(property, out JsonElement propertyElement))
                 {
-                    if (gradeElement.TryGetProperty("Value", out JsonElement gradeElementTwo))
+                    if (propertyElement.TryGetProperty("Value", out JsonElement valueElement))
                     {
-                        return Convert.ToDouble(gradeElementTwo.ToString());
+                        Console.WriteLine(property + " = " + valueElement.ToString());
+                        return Convert.ToDouble(valueElement.ToString());
                     }
                 }
                 return 0;
