@@ -45,30 +45,12 @@ namespace EDSAnalytics
                     Console.WriteLine();
                     Console.WriteLine("================= Data Filtering =================");
                     // Step 1 - Create SineWave type
-                    // create Timestamp property
-                    SdsTypeProperty timestamp = new SdsTypeProperty
+                    var sineWaveProperties = new List<SdsTypeProperty>
                     {
-                        Id = "Timestamp",
-                        Name = "Timestamp",
-                        IsKey = true,
-                        SdsType = new SdsType
-                        {
-                            Name = "DateTime",
-                            SdsTypeCode = 16 // 16 is the SdsTypeCode for a DateTime type. Go to the SdsTypeCode section in EDS documentation for more information.
-                        }
+                        CreateSdsTypePropertyOfTypeDateTime("Timestamp", true),
+                        CreateSdsTypePropertyOfTypeDouble("Value", false)
                     };
-                    SdsType sineWaveType = new SdsType
-                    {
-                        Id = "SineWave",
-                        Name = "SineWave",
-                        SdsTypeCode = 1, // 1 is the SdsTypeCode for an object type. Go to the SdsTypeCode section in EDS documentation for more information.
-                        Properties = new List<SdsTypeProperty>()
-                        {
-                            timestamp,
-                            CreateSdsTypePropertyOfTypeDouble("Value", false)
-                        }
-                    };
-                    await CreateType(sineWaveType);
+                    var sineWaveType = await CreateType("SineWave", "SineWave", sineWaveProperties);
 
                     // Step 2 - Create SineWave stream        
                     SdsStream sineWaveStream = await CreateStream(sineWaveType, "SineWave", "SineWave");
@@ -115,22 +97,17 @@ namespace EDSAnalytics
                     // ====================== Data Aggregation portion ======================
                     Console.WriteLine();
                     Console.WriteLine("================ Data Aggregation ================");
-                    // Step 7 - Create aggregatedDataType type                  
-                    SdsType aggregatedDataType = new SdsType
+                    
+                    // Step 7 - Create aggregatedDataType type   
+                    var aggregatedData = new List<SdsTypeProperty>
                     {
-                        Id = "AggregatedData",
-                        Name = "AggregatedData",
-                        SdsTypeCode = 1,
-                        Properties = new List<SdsTypeProperty>()
-                        {
-                            timestamp,
-                            CreateSdsTypePropertyOfTypeDouble("Mean", false),
-                            CreateSdsTypePropertyOfTypeDouble("Minimum", false),
-                            CreateSdsTypePropertyOfTypeDouble("Maximum", false),
-                            CreateSdsTypePropertyOfTypeDouble("Range", false)
-                        }
+                        CreateSdsTypePropertyOfTypeDateTime("Timestamp", true),
+                        CreateSdsTypePropertyOfTypeDouble("Mean", false),
+                        CreateSdsTypePropertyOfTypeDouble("Minimum", false),
+                        CreateSdsTypePropertyOfTypeDouble("Maximum", false),
+                        CreateSdsTypePropertyOfTypeDouble("Range", false)
                     };
-                    await CreateType(aggregatedDataType);
+                    var aggregatedDataType = await CreateType("AggregatedData", "AggregatedData", aggregatedData);
 
                     // Step 8 - Create CalculatedAggregatedData stream
                     SdsStream calculatedAggregatedDataStream = await CreateStream(aggregatedDataType, "CalculatedAggregatedData", "CalculatedAggregatedData");
@@ -158,10 +135,10 @@ namespace EDSAnalytics
                     await WriteDataToStream(calculatedData, calculatedAggregatedDataStream);
 
                     // Step 10 - Create EdsApiAggregatedData stream
-                    SdsStream edsApiAggregatedDataStream = CreateStream(aggregatedDataType, "EdsApiAggregatedData", "EdsApiAggregatedData").Result;
+                    SdsStream edsApiAggregatedDataStream = await CreateStream(aggregatedDataType, "EdsApiAggregatedData", "EdsApiAggregatedData");
 
                     // Step 11 - Use EDS’s standard data aggregate API calls to ingress aggregated data calculated by EDS and send to EdsApiAggregatedData stream
-                    string summaryData = await IngressSummaryData(sineWaveStream, calculatedData.Timestamp, firstTimestamp.AddMinutes(numberOfEvents).ToString("o"));
+                    string summaryData = await IngressSummaryData(sineWaveStream, calculatedData.Timestamp, firstTimestamp.AddSeconds(numberOfEvents).ToString("o"));
                     AggregateData edsApi = new AggregateData
                     {
                         Timestamp = firstTimestamp.ToString("o"),
@@ -240,15 +217,22 @@ namespace EDSAnalytics
             return stream;
         }
 
-        private static async Task CreateType(SdsType type)
+        private static async Task<SdsType> CreateType(string id, string name, List<SdsTypeProperty> properties)
         {
+            SdsType type = new SdsType
+            {
+                Id = id,
+                Name = name,
+                SdsTypeCode = 1,
+                Properties = properties
+            };
             HttpClient httpClient = new HttpClient();
             Console.WriteLine("Creating " + type.Id + " Type");
             StringContent stringType = new StringContent(JsonSerializer.Serialize(type));
             HttpResponseMessage responseType =
                 await httpClient.PostAsync($"http://localhost:{port}/api/{apiVersion}/Tenants/{tenantId}/Namespaces/{namespaceId}/Types/{type.Id}", stringType);
             CheckIfResponseWasSuccessful(responseType);
-
+            return type;
         }
 
         private static async Task<List<SineData>> IngressSineData(SdsStream stream, string timestamp, int numberOfEvents)
@@ -333,7 +317,23 @@ namespace EDSAnalytics
             };
             return property;
         }
-     
+
+        private static SdsTypeProperty CreateSdsTypePropertyOfTypeDateTime(string idAndName, bool isKey)
+        {
+            SdsTypeProperty property = new SdsTypeProperty
+            {
+                Id = idAndName,
+                Name = idAndName,
+                IsKey = isKey,
+                SdsType = new SdsType
+                {
+                    Name = "DateTime",
+                    SdsTypeCode = 16 // 16 is the SdsTypeCode for a DateTime type. Go to the SdsTypeCode section in EDS documentation for more information.
+                }
+            };
+            return property;
+        }
+
         private static double GetValue(string json, string property)
         {
             using (JsonDocument document = JsonDocument.Parse(json))
@@ -351,5 +351,7 @@ namespace EDSAnalytics
                 return 0;
             }
         }
+
+
     }
 }
