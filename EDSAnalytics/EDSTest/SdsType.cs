@@ -6,22 +6,26 @@ namespace EDSAnalytics
 {
     class SdsType
     {
-        public string Id{
+        public string Id
+        {
             get;
             set;
         }
 
-        public string Name{
+        public string Name
+        {
             get;
             set;
         }
 
-        public string Description{
+        public string Description
+        {
             get;
             set;
         }
 
-        public int SdsTypeCode{
+        public int SdsTypeCode
+        {
             get;
             set;
         }

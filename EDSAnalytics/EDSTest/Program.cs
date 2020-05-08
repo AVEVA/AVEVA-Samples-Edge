@@ -7,7 +7,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Text.Json;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Configuration.Json;
+
 
 namespace EDSAnalytics
 {
@@ -21,6 +21,8 @@ namespace EDSAnalytics
         public static void Main()
         {
             MainAsync().GetAwaiter().GetResult();
+            Console.WriteLine();
+            Console.WriteLine("Demo Application Ran Successfully!");
         }
         public static async Task<bool> MainAsync()
         {
@@ -52,14 +54,14 @@ namespace EDSAnalytics
                         SdsType = new SdsType
                         {
                             Name = "DateTime",
-                            SdsTypeCode = 16
+                            SdsTypeCode = 16 // 16 is the SdsTypeCode for a DateTime type. Go to the SdsTypeCode section in EDS documentation for more information.
                         }
                     };
                     SdsType sineWaveType = new SdsType
                     {
                         Id = "SineWave",
                         Name = "SineWave",
-                        SdsTypeCode = 1,
+                        SdsTypeCode = 1, // 1 is the SdsTypeCode for an object type. Go to the SdsTypeCode section in EDS documentation for more information.
                         Properties = new List<SdsTypeProperty>()
                         {
                             timestamp,
@@ -71,7 +73,7 @@ namespace EDSAnalytics
                     // Step 2 - Create SineWave stream        
                     SdsStream sineWaveStream = await CreateStream(sineWaveType, "SineWave", "SineWave");
 
-                    // Step 3 - Create events of SineData objects. The value property of the SineData object is intitialized to a value between -1.0 and 1.0
+                    // Step 3 - Create a list of events of SineData objects. The value property of the SineData object is intitialized to a value between -1.0 and 1.0
                     Console.WriteLine("Initializing SineData Events");
                     List<SineData> waveList = new List<SineData>();
                     DateTime firstTimestamp = new DateTime();
@@ -133,30 +135,26 @@ namespace EDSAnalytics
                     // Step 8 - Create CalculatedAggregatedData stream
                     SdsStream calculatedAggregatedDataStream = await CreateStream(aggregatedDataType, "CalculatedAggregatedData", "CalculatedAggregatedData");
 
-                    // Step 9 - Calculate mean, min, max, and range using c# libraries and send to the DataAggregation Stream
+                    // Step 9 - Calculate mean, min, max, and range using c# libraries and send to the CalculatedAggregatedData Stream
                     Console.WriteLine("Calculating mean, min, max, and range");
-                    double mean = returnData.Average(rd => rd.Value);
                     var sineDataValues = new List<double>();
                     for (int i = 0; i < numberOfEvents; i++)
                     {
                         sineDataValues.Add(returnData[i].Value);
                         numberOfValidValues++;
-                    }                 
-                    var min = sineDataValues.Min();
-                    var max = sineDataValues.Max();
-                    var range = max - min;
-                    Console.WriteLine("Mean = " + mean);
-                    Console.WriteLine("Maximum = " + max);
-                    Console.WriteLine("Minimum = " + min);
-                    Console.WriteLine("Range = " + range);
+                    }      
                     AggregateData calculatedData = new AggregateData
                     {
                         Timestamp = firstTimestamp.ToString("o"),
-                        Mean = mean,
-                        Minimum = min,
-                        Maximum = max,
-                        Range = range
+                        Mean = returnData.Average(rd => rd.Value),
+                        Minimum = sineDataValues.Min(),
+                        Maximum = sineDataValues.Max(),
+                        Range = sineDataValues.Max()-sineDataValues.Min()
                     };
+                    Console.WriteLine("    Mean = " + calculatedData.Mean);
+                    Console.WriteLine("    Minimum = " + calculatedData.Minimum);
+                    Console.WriteLine("    Maximum = " + calculatedData.Maximum);
+                    Console.WriteLine("    Range = " + calculatedData.Range);
                     await WriteDataToStream(calculatedData, calculatedAggregatedDataStream);
 
                     // Step 10 - Create EdsApiAggregatedData stream
@@ -164,17 +162,13 @@ namespace EDSAnalytics
 
                     // Step 11 - Use EDS’s standard data aggregate API calls to ingress aggregated data calculated by EDS and send to EdsApiAggregatedData stream
                     string summaryData = await IngressSummaryData(sineWaveStream, calculatedData.Timestamp, firstTimestamp.AddMinutes(numberOfEvents).ToString("o"));
-                    double summaryMean = GetValue(summaryData, "Mean");
-                    double summaryMaximum = GetValue(summaryData, "Maximum");
-                    double summaryMinimum = GetValue(summaryData, "Minimum");
-                    double summaryRange = GetValue(summaryData, "Range");
                     AggregateData edsApi = new AggregateData
                     {
                         Timestamp = firstTimestamp.ToString("o"),
-                        Mean = summaryMean,
-                        Minimum = summaryMinimum,
-                        Maximum = summaryMaximum,
-                        Range = summaryMaximum
+                        Mean = GetValue(summaryData, "Mean"),
+                        Minimum = GetValue(summaryData, "Minimum"),
+                        Maximum = GetValue(summaryData, "Maximum"),
+                        Range = GetValue(summaryData, "Range")
                     };
                     await WriteDataToStream(edsApi, edsApiAggregatedDataStream);
  
@@ -191,15 +185,13 @@ namespace EDSAnalytics
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e.Message);
-                    throw e;
+                    Console.WriteLine(e.ToString());
+                    return false;
 
                 }
                 finally
                 {
                     (configuration as IDisposable)?.Dispose();
-                    Console.WriteLine();
-                    Console.WriteLine("Demo Application Ran Successfully!");
                 }
             }
             return true;
@@ -336,7 +328,7 @@ namespace EDSAnalytics
                 SdsType = new SdsType
                 {
                     Name = "Double",
-                    SdsTypeCode = 14
+                    SdsTypeCode = 14 // 14 is the SdsTypeCode for a Double type. Go to the SdsTypeCode section in EDS documentation for more information.
                 }
             };
             return property;
@@ -352,7 +344,7 @@ namespace EDSAnalytics
                 {
                     if (propertyElement.TryGetProperty("Value", out JsonElement valueElement))
                     {
-                        Console.WriteLine(property + " = " + valueElement.ToString());
+                        Console.WriteLine("    " + property + " = " + valueElement.ToString());
                         return Convert.ToDouble(valueElement.ToString());
                     }
                 }

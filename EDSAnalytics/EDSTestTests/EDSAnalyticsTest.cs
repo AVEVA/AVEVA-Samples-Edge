@@ -1,11 +1,5 @@
 using System;
-using System.IO;
-using System.Threading.Tasks;
-using System.Net.Http;
 using Xunit;
-using System.Text.Json;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Configuration.Json;
 
 namespace EDSAnalyticsTest
 {

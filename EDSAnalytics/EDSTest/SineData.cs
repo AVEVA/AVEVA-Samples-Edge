@@ -13,7 +13,7 @@ namespace EDSAnalytics
 
         public SineData(int angle)
         {
-            Value = Math.Sin(angle*.2);
+            Value = Math.Sin(angle * .2);
         }
 
         public double Value{

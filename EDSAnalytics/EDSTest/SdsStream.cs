@@ -6,22 +6,26 @@ namespace EDSAnalytics
 {
     class SdsStream
     {
-        public string Id{
+        public string Id
+        {
             get;
             set;
         }
 
-        public string Name{
+        public string Name
+        {
             get;
             set;
         }
 
-        public string Description{
+        public string Description
+        {
             get;
             set;
         }
 
-        public string TypeId{
+        public string TypeId
+        {
             get;
             set;
         }

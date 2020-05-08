@@ -6,7 +6,7 @@
 ## Requirements
 
 - .NET Core 3.1 is installed
-- Replace the placeholders in the [appsettings](appsettings.json) file with your EDS Port, API Version, Tenant ID, and Namespace ID
+- Replace the default values in the [appsettings](appsettings.json) file with your EDS Port, API Version, Tenant ID, and Namespace ID.
 
 
 ## Running the sample

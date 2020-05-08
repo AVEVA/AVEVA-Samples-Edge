@@ -6,27 +6,32 @@ namespace EDSAnalytics
 {
     class SdsTypeProperty
     {
-        public string Id{
+        public string Id
+        {
             get;
             set;
         }
 
-        public string Name{
+        public string Name
+        {
             get;
             set;
         }
 
-        public string Description{
+        public string Description
+        {
             get;
             set;
         }
 
-        public SdsType SdsType{
+        public SdsType SdsType
+        {
             get;
             set;
         }
 
-        public bool IsKey{
+        public bool IsKey
+        {
             get;
             set;
         }
