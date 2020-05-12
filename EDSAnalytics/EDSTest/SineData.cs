@@ -3,7 +3,7 @@
 
 namespace EDSAnalytics
 {
-    class SineData
+    public class SineData
     {
         public SineData()
         {
@@ -15,15 +15,8 @@ namespace EDSAnalytics
             Value = Math.Sin(angle * .2);
         }
 
-        public double Value{
-            get;
-            set;
-        }
+        public double Value { get; set; }
 
-        public string Timestamp{
-            get;
-            set;
-        }
-
+        public DateTime Timestamp { get; set; }
     }
 }
