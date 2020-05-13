@@ -6,6 +6,8 @@
 
 This sample uses bash scripts to install and configure Edge Data Store on a remote Linux edge device.
 
+**Note:** This sample is intended for or targets a Linux operating system. This sample utilizes some built-in features and tools of Linux such as bash and ssh. Due to the numerous options and varieties of Linux and its built-in tools, we are unable to provide a specific list of potential security issues for the operating system and built-in tools. Please evaluate your Linux operating system and the tools used for potential security concerns before running and extending the sample. We do not endorse any specific version or distribution of Linux.
+
 ## Requirements
 
 ### One-Time Local Setup
