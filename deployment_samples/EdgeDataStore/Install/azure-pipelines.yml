@@ -5,7 +5,7 @@ trigger:
       - master
   paths:
     include:
-      - '/deployment_samples/EdgeDataStore/Install'
+      - "/deployment_samples/EdgeDataStore/Install"
 
 pr:
   branches:
@@ -13,10 +13,10 @@ pr:
       - master
   paths:
     include:
-      - '/deployment_samples/EdgeDataStore/Install'
+      - "/deployment_samples/EdgeDataStore/Install"
 
 schedules:
-  - cron: '0 0 * * 0'
+  - cron: "0 0 * * 0"
     displayName: Weekly build
     branches:
       include:
@@ -24,9 +24,9 @@ schedules:
     always: true
 
 variables:
-  - template: '/miscellaneous/build_templates/variables.yml'
+  - template: "/miscellaneous/build_templates/variables.yml"
   - name: projPath
-    value: '/deployment_samples/EdgeDataStore/Install'
+    value: "/deployment_samples/EdgeDataStore/Install"
   - name: CredFile
     value: config.ini
   - name: CredFileLibrary
@@ -39,19 +39,26 @@ variables:
 jobs:
   - job: Tests
     pool:
-      vmImage: 'ubuntu-latest'
+      vmImage: "ubuntu-latest"
     steps:
-      - template: '/miscellaneous/build_templates/config.yml'
+      - template: "/miscellaneous/build_templates/config.yml"
         parameters:
           fileOriginal: $(CredFile)
           fileLibrary: $(CredFileLibrary)
           filePath: $(projPath)
-          
-      - template: '/miscellaneous/build_templates/config.yml'
+
+      - template: "/miscellaneous/build_templates/config.yml"
         parameters:
           fileOriginal: $(InstallFile)
           fileLibrary: $(InstallFileLibrary)
           filePath: $(projPath)
+
+      - task: CopyFiles@2
+        displayName: "Copy Install"
+        inputs:
+          SourceFolder: C:\eds-install-kit
+          Contents: EdgeDataStore.deb
+          TargetFolder: $(Build.SourcesDirectory)$(projPath)/Install/templates/installation_files/
 
       - bash: |
           chmod +x test.sh
@@ -61,4 +68,4 @@ jobs:
           ./test.sh
         failOnStderr: true
         workingDirectory: $(Build.SourcesDirectory)$(projPath)/
-        displayName: 'Run tests'
+        displayName: "Run tests"
