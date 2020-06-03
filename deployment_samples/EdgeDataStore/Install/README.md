@@ -19,7 +19,7 @@ This sample uses bash scripts to install and configure Edge Data Store on a remo
 
    Then install a Linux distribution like [Ubuntu](https://www.microsoft.com/store/apps/9N9TNGVNDL3Q), and use `bash` for all other commands in this ReadMe.
 
-1. Prepare an `installation_files` folder with the Edge Data Store `.deb` files for the required processor architecture(s)
+1. Prepare the `installation_files` folder with the Edge Data Store `EdgeDataStore.deb` files for the required processor architecture(s)
 1. (Optional) Configure template files in ./templates as desired
 
 ### Per-Device Setup
