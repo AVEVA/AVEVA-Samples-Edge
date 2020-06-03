@@ -1,1 +1,1 @@
-Add your installation files here.
+Add your installation files to this folder.
