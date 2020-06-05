@@ -56,7 +56,7 @@ jobs:
           filePath: $(projPath)
 
       - bash: |
-          cp C:\eds-install-kit\EdgeDataStore.deb ./Install/templates/installation_files/
+          cp C:/eds-install-kit/EdgeDataStore.deb ./Install/templates/installation_files/
           chmod +x test.sh
           chmod +x remote.sh
           chmod +x reset.sh
