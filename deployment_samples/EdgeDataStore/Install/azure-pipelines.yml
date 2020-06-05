@@ -35,6 +35,8 @@ variables:
     value: loc.ini
   - name: InstallFileLibrary
     value: product-readiness.eds_loc.ini
+  - name: analysisProject
+    value: EDS_Deployment_Install
 
 jobs:
   - job: Tests
@@ -46,7 +48,7 @@ jobs:
           fileOriginal: $(CredFile)
           fileLibrary: $(CredFileLibrary)
           filePath: $(projPath)
-          
+
       - template: '/miscellaneous/build_templates/config.yml'
         parameters:
           fileOriginal: $(InstallFile)
@@ -62,3 +64,7 @@ jobs:
         failOnStderr: true
         workingDirectory: $(Build.SourcesDirectory)$(projPath)/
         displayName: 'Run tests'
+
+  - template: '/miscellaneous/build_templates/analysis.yml'
+    parameters:
+      language: powershell
