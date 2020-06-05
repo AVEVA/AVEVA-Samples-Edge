@@ -1,4 +1,4 @@
-echo "Reset Device: Uninstall IoT Edge runtime..."
+echo "Reset Device: Uninstall OSIsoft Edge Data Store..."
 echo -e "y" | sudo apt remove osisoft.edgedatastore
 
 echo "Reset Device: Remove OSIsoft directory..."
