@@ -55,14 +55,8 @@ jobs:
           fileLibrary: $(InstallFileLibrary)
           filePath: $(projPath)
 
-      - task: CopyFiles@2
-        displayName: 'Copy Install'
-        inputs:
-          SourceFolder: C:\eds-install-kit
-          Contents: EdgeDataStore.deb
-          TargetFolder: $(Build.SourcesDirectory)$(projPath)/Install/templates/installation_files/
-
       - bash: |
+          cp C:\eds-install-kit\EdgeDataStore.deb ./Install/templates/installation_files/
           chmod +x test.sh
           chmod +x remote.sh
           chmod +x reset.sh
