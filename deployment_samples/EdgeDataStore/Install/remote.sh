@@ -154,6 +154,7 @@ mkdir -p ./send/installation_files
 	
 # Copy remote install script
 cp -a ./templates/script.sh ./send/script.sh
+chmod +x ./send/script.sh
 
 echo "Copying install file"
 # Copy appropriate install 
