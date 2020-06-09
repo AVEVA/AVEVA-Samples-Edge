@@ -20,6 +20,9 @@ ssh -o "StrictHostKeyChecking=no" $UserName@$IpAddress
 echo "Test: Copy ssh key to device..."
 echo "exit" | echo "$Password" | sshpass ssh-copy-id -f $UserName@$IpAddress
 
+echo "Test: Copy EDS install kit to agent machine"
+scp -r $UserName@$IpAddress:/home/$UserName/EdgeDataStore_linux-x64.deb ./templates/installation_files/EdgeDataStore_linux-x64.deb
+
 # Bash: Exit on error
 set -e
 
