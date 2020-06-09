@@ -25,7 +25,7 @@ do
 		sleep 5
 	fi
 	((condition++))
-	if ((condition > 10)); then 	
+	if ((condition > 30)); then 	
 		echo "Device: Things didn't work..."
 		exit 1
 	else
