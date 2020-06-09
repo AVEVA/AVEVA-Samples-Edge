@@ -60,8 +60,7 @@ jobs:
         inputs:
           sourceFolder: 'C:\eds-install-kit\'
           contents: 'EdgeDataStore.deb'
-          targetFolder: '.\Install\templates\installation_files'
-        workingDirectory: $(Build.SourcesDirectory)$(projPath)/
+          targetFolder: '$(Build.SourcesDirectory)$(projPath)/templates/installation_files'
         displayName: 'Copy install kit'
 
       - bash: |
