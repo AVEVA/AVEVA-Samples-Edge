@@ -2,7 +2,7 @@
 
 **Version:** 1.0.0
 
-[![Build Status](https://dev.azure.com/osieng/engineering/_apis/build/status/product-readiness/Edge/EDS_Azure?branchName=master)](https://dev.azure.com/osieng/engineering/_build/latest?definitionId=1383&branchName=master)
+[![Build Status](https://dev.azure.com/osieng/engineering/_apis/build/status/product-readiness/Edge/EDS_Azure?branchName=master)](https://dev.azure.com/osieng/engineering/_build?definitionId=1383&branchName=master)
 
 This sample uses bash scripts to deploy Edge Data Store to a remote Linux edge device using Azure IoT Hub and Azure IoT Edge Modules.
 

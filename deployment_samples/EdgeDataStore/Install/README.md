@@ -2,7 +2,7 @@
 
 **Version:** 1.0.0
 
-[![Build Status](https://dev.azure.com/osieng/engineering/_apis/build/status/product-readiness/OCS/CSVtoOCS_DotNet?branchName=master)](https://dev.azure.com/osieng/engineering/_build/latest?definitionId=1393&branchName=master)
+[![Build Status](https://dev.azure.com/osieng/engineering/_apis/build/status/product-readiness/Edge/EDS_Install?branchName=master)](https://dev.azure.com/osieng/engineering/_build?definitionId=1415&branchName=master)
 
 This sample uses bash scripts to install and configure Edge Data Store on a remote Linux edge device.
 
