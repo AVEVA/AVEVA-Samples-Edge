@@ -1,0 +1,24 @@
+parameters:
+  language: ''
+  web: false
+  lib: false
+  skipBinSkim: false
+
+jobs:
+  - job: Analysis
+    pool:
+      name: 00-OSIManaged-Test
+      demands: COMPUTERNAME -equals $(buildAgent)
+    steps:
+      # Synopsys
+      - task: synopsys-detect.synopsys-detect.synopsys-detect-task.SynopsysDetectTask@2
+        inputs:
+          Products: BD
+          BlackDuckService: 'product-readiness.BlackDuck'
+          DetectArguments: |
+            --detect.project.name="product-readiness.$(analysisProject)"
+            --detect.project.version.name="$(Build.SourceBranchName)"
+            --detect.source.path=$(Build.SourcesDirectory)$(projPath)/
+            --detect.code.location.name="code_location_$(analysisProject)_$(Build.SourceBranchName)"
+            --detect.bom.aggregate.name="bom_$(analysisProject)_$(Build.SourceBranchName)"
+        displayName: 'Synopsys Detect: BlackDuck'

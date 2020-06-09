@@ -1,0 +1,9 @@
+,{
+  "Id": "<egressID>",
+  "ExecutionPeriod": "00:00:10",
+  "NamespaceId": "<namespace>",
+  "StreamPrefix": "<prefix>",
+  "Endpoint": "<url>",
+  "ClientId": "<id>",
+  "ClientSecret": "<password>"
+}
