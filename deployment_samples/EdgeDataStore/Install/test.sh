@@ -20,8 +20,8 @@ ssh -o "StrictHostKeyChecking=no" $UserName@$IpAddress
 echo "Test: Copy ssh key to device..."
 echo "exit" | echo "$Password" | sshpass ssh-copy-id -f $UserName@$IpAddress
 
-echo "Test: Copy install file to location."
-scp $UserName@$IpAddress:/usr/local/EdgeDataStore.deb ./templates/installation_files/EdgeDataStore_linux-x64.deb
+# Bash: Exit on error
+set -e
 
 echo "Test: run remote.sh with config file"
 echo loc.ini | ./remote.sh
@@ -34,6 +34,9 @@ if [[ $file2 == *"diagnostics"* ]]
 	else
 		exit 1
 fi
+
+# Bash: No exit on error
+set +e
 
 echo "Test: Running reset script..."
 ./reset.sh
