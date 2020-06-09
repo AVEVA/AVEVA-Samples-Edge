@@ -34,7 +34,7 @@ variables:
   - name: InstallFile
     value: loc.ini
   - name: InstallFileLibrary
-    value: product-readiness.eds_loc.ini
+    value: product-readiness.eds_install_loc.ini
   - name: analysisProject
     value: EDS_Deployment_Install
 
