@@ -41,7 +41,8 @@ variables:
 jobs:
   - job: Tests
     pool:
-      vmImage: 'ubuntu-latest'
+      name: 00-OSIManaged-Test
+      demands: COMPUTERNAME -equals $(buildAgent)
     steps:
       - template: '/miscellaneous/build_templates/config.yml'
         parameters:
@@ -55,14 +56,20 @@ jobs:
           fileLibrary: $(InstallFileLibrary)
           filePath: $(projPath)
 
+      - task: CopyFiles@2
+        inputs:
+          sourceFolder: 'C:\eds-install-kit\'
+          contents: 'EdgeDataStore.deb'
+          targetFolder: '.\Install\templates\installation_files'
+        workingDirectory: $(Build.SourcesDirectory)$(projPath)/
+        displayName: 'Copy install kit'
+
       - bash: |
-          cp C:/eds-install-kit/EdgeDataStore.deb ./Install/templates/installation_files/
           chmod +x test.sh
           chmod +x remote.sh
           chmod +x reset.sh
           chmod +x reset-device.sh
           ./test.sh
-        failOnStderr: true
         workingDirectory: $(Build.SourcesDirectory)$(projPath)/
         displayName: 'Run tests'
 
