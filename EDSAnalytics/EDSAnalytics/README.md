@@ -1,5 +1,5 @@
 # EDS Analytics Sample and Test
-
+**Version:**: 1.0.0
 [![Build Status](https://PLACE_BUILD_STATUS_LINK_HERE)]
 
 
