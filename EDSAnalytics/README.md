@@ -102,4 +102,9 @@ to extract the mean, minimum, maximum, and range. This data is copied into an Ag
 Step 12 
 - The Types and Streams created by the application are deleted.
 
+---
 
+Tested against DotNet 3.1.
+
+For the main Edge page [ReadMe](https://github.com/osisoft/OSI-Samples-Edge)  
+For the main samples page on master [ReadMe](https://github.com/osisoft/OSI-Samples)
