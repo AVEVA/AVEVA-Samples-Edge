@@ -2,9 +2,9 @@
 
 These samples demonstrate deployment of OSIsoft Edge technologies.
 
-| Task                              | Description                                                      | Languages    |
-| --------------------------------- | ---------------------------------------------------------------- | ------------ |
-| [EdgeDataStore](./EdgeDataStore/) | These samples demonstrate deployment of OSIsoft Edge Data Store. | Bash Scripts |
+| Task                              | Description                                                      |
+| --------------------------------- | ---------------------------------------------------------------- |
+| [EdgeDataStore](./EdgeDataStore/) | These samples demonstrate deployment of OSIsoft Edge Data Store. |
 
 ---
 
