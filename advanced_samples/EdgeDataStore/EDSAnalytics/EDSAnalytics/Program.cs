@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -164,10 +165,11 @@ namespace EDSAnalytics
                 await AsyncDeleteTypeAsync(sineWaveType).ConfigureAwait(false);
                 await AsyncDeleteTypeAsync(aggregatedDataType).ConfigureAwait(false);
             }
-            catch (Exception e)
+            catch
             {
-                Console.WriteLine(e.ToString());
-                return false;
+                _httpClient?.Dispose();
+                _httpClientGzip?.Dispose();
+                throw;
             }
             finally
             {
@@ -189,18 +191,18 @@ namespace EDSAnalytics
         private static async Task AsyncDeleteStreamAsync(SdsStream stream)
         {
             Console.WriteLine("Deleting " + stream.Id + " Stream");
-            
-            var responseDeleteStream =
-                await _httpClient.DeleteAsync($"http://localhost:{_port}/api/v1/Tenants/{_tenantId}/Namespaces/{_namespaceId}/Streams/{stream.Id}").ConfigureAwait(false);
+
+            var requestUri = new Uri($"http://localhost:{_port}/api/v1/Tenants/{_tenantId}/Namespaces/{_namespaceId}/Streams/{stream.Id}");
+            var responseDeleteStream = await _httpClient.DeleteAsync(requestUri).ConfigureAwait(false);
             CheckIfResponseWasSuccessful(responseDeleteStream);
         }
 
         private static async Task AsyncDeleteTypeAsync(SdsType type)
         {
             Console.WriteLine("Deleting " + type.Id + " Type");
-            
-            var responseDeleteType =
-                await _httpClient.DeleteAsync($"http://localhost:{_port}/api/v1/Tenants/{_tenantId}/Namespaces/{_namespaceId}/Types/{type.Id}").ConfigureAwait(false);
+
+            var requestUri = new Uri($"http://localhost:{_port}/api/v1/Tenants/{_tenantId}/Namespaces/{_namespaceId}/Types/{type.Id}");
+            var responseDeleteType = await _httpClient.DeleteAsync(requestUri).ConfigureAwait(false);
             CheckIfResponseWasSuccessful(responseDeleteType);
         }
 
@@ -217,8 +219,8 @@ namespace EDSAnalytics
             
             using (var stringStream = new StringContent(JsonSerializer.Serialize(stream)))
             {
-                var responseCreateStream =
-                    await _httpClient.PostAsync($"http://localhost:{_port}/api/v1/Tenants/{_tenantId}/Namespaces/{_namespaceId}/Streams/{stream.Id}", stringStream).ConfigureAwait(false);
+                var requestUri = new Uri($"http://localhost:{_port}/api/v1/Tenants/{_tenantId}/Namespaces/{_namespaceId}/Streams/{stream.Id}");
+                var responseCreateStream = await _httpClient.PostAsync(requestUri, stringStream).ConfigureAwait(false);
 
                 CheckIfResponseWasSuccessful(responseCreateStream);
             }
@@ -228,20 +230,14 @@ namespace EDSAnalytics
 
         private static async Task<SdsType> AsyncCreateTypeAsync(string id, string name, List<SdsTypeProperty> properties)
         {
-            var type = new SdsType
-            {
-                Id = id,
-                Name = name,
-                SdsTypeCode = 1,
-                Properties = properties,
-            };
+            var type = new SdsType(id, name, 1, properties);
 
             Console.WriteLine("Creating " + type.Id + " Type");
             
             using (var stringType = new StringContent(JsonSerializer.Serialize(type)))
             {
-                var responseType =
-                    await _httpClient.PostAsync($"http://localhost:{_port}/api/v1/Tenants/{_tenantId}/Namespaces/{_namespaceId}/Types/{type.Id}", stringType).ConfigureAwait(false);
+                var requestUri = new Uri($"http://localhost:{_port}/api/v1/Tenants/{_tenantId}/Namespaces/{_namespaceId}/Types/{type.Id}");
+                var responseType = await _httpClient.PostAsync(requestUri, stringType).ConfigureAwait(false);
 
                 CheckIfResponseWasSuccessful(responseType);
             }
@@ -253,9 +249,9 @@ namespace EDSAnalytics
         {
             Console.WriteLine("Ingressing data from " + stream.Id + " stream");
 
-            using var responseIngress =
-                await _httpClientGzip.GetAsync($"http://localhost:{_port}/api/v1/Tenants/{_tenantId}/Namespaces/{_namespaceId}/Streams/" +
-                $"{stream.Id}/Data?startIndex={timestamp:o}&count={numberOfEvents}").ConfigureAwait(false);
+            var requestUri = new Uri($"http://localhost:{_port}/api/v1/Tenants/{_tenantId}/Namespaces/{_namespaceId}/Streams/" +
+                $"{stream.Id}/Data?startIndex={timestamp:o}&count={numberOfEvents}");
+            using var responseIngress = await _httpClientGzip.GetAsync(requestUri).ConfigureAwait(false);
             CheckIfResponseWasSuccessful(responseIngress);
             var ms = await AsyncDecompressGzipAsync(responseIngress).ConfigureAwait(false);
             using var sr = new StreamReader(ms);
@@ -266,9 +262,9 @@ namespace EDSAnalytics
         {
             Console.WriteLine("Ingressing Data from " + stream.Id + " Stream Summary");
 
-            using var responseIngress =
-                await _httpClientGzip.GetAsync($"http://localhost:{_port}/api/v1/Tenants/{_tenantId}/Namespaces/{_namespaceId}/Streams/" +
-                $"{stream.Id}/Data/Summaries?startIndex={startTimestamp:o}&endIndex={endTimestamp:o}&count=1").ConfigureAwait(false);
+            var requestUri = new Uri($"http://localhost:{_port}/api/v1/Tenants/{_tenantId}/Namespaces/{_namespaceId}/Streams/" +
+                $"{stream.Id}/Data/Summaries?startIndex={startTimestamp:o}&endIndex={endTimestamp:o}&count=1");
+            using var responseIngress = await _httpClientGzip.GetAsync(requestUri).ConfigureAwait(false);
             CheckIfResponseWasSuccessful(responseIngress);
             var ms = await AsyncDecompressGzipAsync(responseIngress).ConfigureAwait(false);
             using var sr = new StreamReader(ms);
@@ -294,8 +290,8 @@ namespace EDSAnalytics
             Console.WriteLine("Writing Data to " + stream.Id + " stream");
 
             using var serializedData = new StringContent(JsonSerializer.Serialize(list));
-            var responseWriteDataToStream =
-                await _httpClient.PostAsync($"http://localhost:{_port}/api/v1/Tenants/{_tenantId}/Namespaces/{_namespaceId}/Streams/{stream.Id}/Data", serializedData).ConfigureAwait(false);
+            var requestUri = new Uri($"http://localhost:{_port}/api/v1/Tenants/{_tenantId}/Namespaces/{_namespaceId}/Streams/{stream.Id}/Data");
+            var responseWriteDataToStream = await _httpClient.PostAsync(requestUri, serializedData).ConfigureAwait(false);
             CheckIfResponseWasSuccessful(responseWriteDataToStream);
         }
 
@@ -308,8 +304,8 @@ namespace EDSAnalytics
             Console.WriteLine("Writing Data to " + stream.Id + " stream");
 
             using var serializedData = new StringContent(JsonSerializer.Serialize(dataList));
-            var responseWriteDataToStream =
-                await _httpClient.PostAsync($"http://localhost:{_port}/api/v1/Tenants/{_tenantId}/Namespaces/{_namespaceId}/Streams/{stream.Id}/Data", serializedData).ConfigureAwait(false);
+            var requestUri = new Uri($"http://localhost:{_port}/api/v1/Tenants/{_tenantId}/Namespaces/{_namespaceId}/Streams/{stream.Id}/Data");
+            var responseWriteDataToStream = await _httpClient.PostAsync(requestUri, serializedData).ConfigureAwait(false);
             CheckIfResponseWasSuccessful(responseWriteDataToStream);
         }
 
@@ -357,7 +353,7 @@ namespace EDSAnalytics
                 if (propertyElement.TryGetProperty(Constants.ValueProperty, out JsonElement valueElement))
                 {
                     Console.WriteLine("    " + property + " = " + valueElement.ToString());
-                    return Convert.ToDouble(valueElement.ToString());
+                    return Convert.ToDouble(valueElement.ToString(), CultureInfo.InvariantCulture);
                 }
             }
 
