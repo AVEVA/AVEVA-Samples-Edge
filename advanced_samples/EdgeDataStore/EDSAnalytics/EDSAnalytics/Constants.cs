@@ -1,6 +1,6 @@
 ﻿namespace EDSAnalytics
 {
-    public class Constants
+    public static class Constants
     {
         public const string FilteredSineWaveStream = "FilteredSineWave";
         public const string AggregatedDataStream = "AggregatedData";

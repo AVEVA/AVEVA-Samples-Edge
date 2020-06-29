@@ -5,7 +5,19 @@ VisualStudioVersion = 16.0.29905.134
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EDSAnalytics", "EDSAnalytics\EDSAnalytics.csproj", "{813E0B51-5AF2-4C10-B22E-C1F85519B4B8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EDSAnalyticsTest", "EDSAnalyticsTests\EDSAnalyticsTest.csproj", "{17DA6626-F5FC-4462-A71E-D8B2463104B0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EDSAnalyticsTests", "EDSAnalyticsTests\EDSAnalyticsTests.csproj", "{17DA6626-F5FC-4462-A71E-D8B2463104B0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7C4402C7-F590-492A-AEF9-75491A09A013}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\..\.editorconfig = ..\..\..\.editorconfig
+		azure-pipeline.yml = azure-pipeline.yml
+		..\..\..\Directory.Build.props = ..\..\..\Directory.Build.props
+		..\..\..\Extensions.ruleset = ..\..\..\Extensions.ruleset
+		HISTORY.md = HISTORY.md
+		..\..\..\OSIsoft.ruleset = ..\..\..\OSIsoft.ruleset
+		README.md = README.md
+		..\..\..\stylecop.json = ..\..\..\stylecop.json
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

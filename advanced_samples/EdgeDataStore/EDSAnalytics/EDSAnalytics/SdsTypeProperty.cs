@@ -1,5 +1,4 @@
-﻿
-namespace EDSAnalytics
+﻿namespace EDSAnalytics
 {
     public class SdsTypeProperty
     {
@@ -14,4 +13,3 @@ namespace EDSAnalytics
         public bool IsKey { get; set; }
     }
 }
-

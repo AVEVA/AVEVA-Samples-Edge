@@ -15,4 +15,3 @@ namespace EDSAnalytics
         public IList<SdsTypeProperty> Properties { get; set; }
     }
 }
-

@@ -34,14 +34,9 @@ variables:
 
 jobs:
   - job: Tests
-    strategy:
-      matrix:
-        linux:
-          imageName: 'ubuntu-latest'
-        windows:
-          imageName: 'windows-latest'
     pool:
-      vmImage: $(imageName)
+      name: 00-OSIManaged-Test
+      demands: COMPUTERNAME -equals $(buildAgent)
     steps:
       - task: DotNetCoreCLI@2
         displayName: 'Run tests'

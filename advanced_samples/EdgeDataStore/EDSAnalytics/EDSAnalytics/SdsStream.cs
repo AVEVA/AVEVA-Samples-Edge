@@ -1,5 +1,4 @@
-﻿
-namespace EDSAnalytics
+﻿namespace EDSAnalytics
 {
     public class SdsStream
     {
