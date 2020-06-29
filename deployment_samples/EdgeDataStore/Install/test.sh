@@ -10,6 +10,9 @@ az account set --subscription $AzSubscription
 echo "Test: Start the VM..."
 az vm start -g $AzResourceGroup -n $AzVmName
 
+echo "Test: Wait for VM to install automated updates..."
+sleep 60
+
 echo "Test: Install sshpass..."
 sudo apt install sshpass
 
