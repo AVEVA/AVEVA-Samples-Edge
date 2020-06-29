@@ -2,17 +2,14 @@
 
 **Version:**: 1.0.0
 
-[![Build Status](https://PLACE_BUILD_STATUS_LINK_HERE)]
+[![Build Status](https://dev.azure.com/osieng/engineering/_apis/build/status/product-readiness/Edge/EDS_Analytics_DotNet?branchName=master)](https://dev.azure.com/osieng/engineering/_build?definitionId=1827&branchName=master)
 
 ## Requirements
 
-- .NET Core 3.1 is installed
+- .NET Core 3.1 must be installed
+- Edge Data Store must be installed and running on the local machine.
 
 ## Running the sample
-
-### Prerequisites
-
-- Have EDS installed and running on local machine.
 
 ### Using Visual Studio
 
