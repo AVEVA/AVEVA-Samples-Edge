@@ -2,9 +2,9 @@
 
 These samples simulate real world software applications and solutions using OSIsoft Edge technologies.
 
-| Task                              | Description                                                                    |
-| --------------------------------- | ------------------------------------------------------------------------------ |
-| [EdgeDataStore](./EdgeDataStore/) | These samples demonstrate software applications using OSIsoft Edge Data Store. |
+| Task                           | Description                                                                    |
+| ------------------------------ | ------------------------------------------------------------------------------ |
+| [EdgeDataStore](EdgeDataStore) | These samples demonstrate software applications using OSIsoft Edge Data Store. |
 
 ---
 

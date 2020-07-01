@@ -2,9 +2,9 @@
 
 These samples demonstrate deployment of OSIsoft Edge technologies.
 
-| Task                              | Description                                                      |
-| --------------------------------- | ---------------------------------------------------------------- |
-| [EdgeDataStore](./EdgeDataStore/) | These samples demonstrate deployment of OSIsoft Edge Data Store. |
+| Task                           | Description                                                      |
+| ------------------------------ | ---------------------------------------------------------------- |
+| [EdgeDataStore](EdgeDataStore) | These samples demonstrate deployment of OSIsoft Edge Data Store. |
 
 ---
 
