@@ -4,6 +4,8 @@
 
 [![Build Status](https://dev.azure.com/osieng/engineering/_apis/build/status/product-readiness/Edge/EDS_Analytics_DotNet?branchName=master)](https://dev.azure.com/osieng/engineering/_build?definitionId=1827&branchName=master)
 
+This sample demonstrates how to build an application that can run analytics against streams in Edge Data Store and write results back to Edge Data Store.
+
 ## Requirements
 
 - .NET Core 3.1 must be installed
