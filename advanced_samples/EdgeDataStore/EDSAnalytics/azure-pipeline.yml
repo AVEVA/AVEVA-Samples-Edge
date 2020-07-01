@@ -1,0 +1,51 @@
+trigger:
+  batch: true
+  branches:
+    include:
+      - master
+  paths:
+    include:
+      - '/advanced_samples/EdgeDataStore/EDSAnalytics'
+
+pr:
+  branches:
+    include:
+      - master
+  paths:
+    include:
+      - '/advanced_samples/EdgeDataStore/EDSAnalytics'
+
+schedules:
+  - cron: '0 0 * * 0'
+    displayName: Weekly build
+    branches:
+      include:
+        - master
+    always: true
+
+variables:
+  - template: '/miscellaneous/build_templates/variables.yml'
+  - name: projPath
+    value: '/advanced_samples/EdgeDatastore/EDSAnalytics'
+  - name: covStream
+    value: SDSDotNetAPI
+  - name: analysisProject
+    value: EDS_Analytics_DotNet
+
+jobs:
+  - job: Tests
+    pool:
+      name: 00-OSIManaged-Test
+      demands: COMPUTERNAME -equals $(buildAgent)
+    steps:
+      - task: DotNetCoreCLI@2
+        displayName: 'Run tests'
+        inputs:
+          command: test
+          publishTestResults: true
+          testRunTitle: '$(Agent.JobName) on $(imageName)'
+          workingDirectory: $(Build.SourcesDirectory)$(projPath)/
+
+  - template: '/miscellaneous/build_templates/analysis.yml'
+    parameters:
+      language: dotnet

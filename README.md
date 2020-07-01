@@ -4,9 +4,11 @@ OSIsoft's Edge technologies, including OSIsoft Edge Data Store and OSIsoft Edge 
 
 The OSIsoft Edge Samples are organized by tasks and accessible through the following table:
 
-| Task                                | Description                                                        | Languages    |
-| ----------------------------------- | ------------------------------------------------------------------ | ------------ |
-| [Deployment](./deployment_samples/) | These samples demonstrate deployment of OSIsoft Edge technologies. | Bash Scripts |
+| Task                                                               | Description                                                                                                                                               | Languages                                                | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Test&nbsp;Status&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                                                                                          |
+| ------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [EDS Analytics](advanced_samples/EdgeDataStore/EDSAnalytics)       | This sample demonstrates how to build an application that can run analytics against streams in Edge Data Store and write results back to Edge Data Store. | [.NET](advanced_samples/EdgeDataStore/EDSAnalytics)      | [![Build Status](https://dev.azure.com/osieng/engineering/_apis/build/status/product-readiness/Edge/EDS_Analytics_DotNet?branchName=master)](https://dev.azure.com/osieng/engineering/_build?definitionId=1827&branchName=master) |
+| [EDS Azure Deployment](deployment_samples/EdgeDataStore/Azure)     | This sample uses bash scripts to deploy Edge Data Store to a remote Linux edge device using Azure IoT Hub and Azure IoT Edge Modules.                     | [Bash Scripts](deployment_samples/EdgeDataStore/Azure)   | [![Build Status](https://dev.azure.com/osieng/engineering/_apis/build/status/product-readiness/Edge/EDS_Azure?branchName=master)](https://dev.azure.com/osieng/engineering/_build?definitionId=1383&branchName=master)            |
+| [EDS Install Deployment](deployment_samples/EdgeDataStore/Install) | This sample uses bash scripts to install and configure Edge Data Store on a remote Linux edge device.                                                     | [Bash Scripts](deployment_samples/EdgeDataStore/Install) | [![Build Status](https://dev.azure.com/osieng/engineering/_apis/build/status/product-readiness/Edge/EDS_Install?branchName=master)](https://dev.azure.com/osieng/engineering/_build?definitionId=1415&branchName=master)          |
 
 ## About this repo
 
@@ -14,11 +16,11 @@ The [style guide](https://github.com/osisoft/OSI-Samples/blob/master/STYLE_GUIDE
 
 ## Feedback
 
-If you have a need for a new sample; if there is a feature or capability that should be demonstrated; if there is an existing sample that should be in your favorite language; please reach out to us and give us feedback at https://feedback.osisoft.com under the OSIsoft GitHub Channel. [Feedback](https://feedback.osisoft.com/forums/922279-osisoft-github).
+If you have a need for a new sample; if there is a feature or capability that should be demonstrated; if there is an existing sample that should be in your favorite language; please reach out to us and give us feedback at [https://feedback.osisoft.com](https://feedback.osisoft.com) under the OSIsoft GitHub Channel. [Feedback](https://feedback.osisoft.com/forums/922279-osisoft-github).
 
 ## Support
 
-If your support question or issue is related to something with an OSIsoft product (an error message, a problem with product configuration, etc...), please open a case with OSIsoft Tech Support through myOSIsoft Customer Portal (https://my.osisoft.com).
+If your support question or issue is related to something with an OSIsoft product (an error message, a problem with product configuration, etc...), please open a case with OSIsoft Tech Support through myOSIsoft Customer Portal ([https://my.osisoft.com](https://my.osisoft.com)).
 
 If your support question or issue is related to a non-modified sample (or test) or documentation for the sample; please email Samples@osisoft.com.
 
