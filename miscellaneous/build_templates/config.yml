@@ -23,10 +23,6 @@ steps:
       #flattenFolders: false # Optional
     displayName: 'Copy library config file'
 
-  - bash: rm ${{ parameters.fileOriginal }}
-    workingDirectory: $(Build.SourcesDirectory)${{ parameters.filePath }}/
-    displayName: 'Delete original config file'
-
   - bash: mv ${{ parameters.fileLibrary }} ${{ parameters.fileOriginal }}
     workingDirectory: $(Build.SourcesDirectory)${{ parameters.filePath }}/
     displayName: 'Rename library config file'
