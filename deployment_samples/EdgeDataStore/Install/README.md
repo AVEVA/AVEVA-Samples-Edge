@@ -1,6 +1,6 @@
 # OSIsoft Edge Data Store Install Deployment Sample
 
-**Version:** 1.0.1
+**Version:** 1.0.2
 
 [![Build Status](https://dev.azure.com/osieng/engineering/_apis/build/status/product-readiness/Edge/EDS_Install?branchName=master)](https://dev.azure.com/osieng/engineering/_build?definitionId=1415&branchName=master)
 

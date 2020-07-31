@@ -312,3 +312,6 @@ product-readiness.*
 
 # Deployment send folders
 send/
+
+# Credential Config Files
+config.ini
