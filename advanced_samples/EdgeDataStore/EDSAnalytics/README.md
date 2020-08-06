@@ -1,6 +1,6 @@
 # EDS Analytics Sample and Test
 
-**Version:**: 1.0.0
+**Version:**: 1.0.1
 
 [![Build Status](https://dev.azure.com/osieng/engineering/_apis/build/status/product-readiness/Edge/EDS_Analytics_DotNet?branchName=master)](https://dev.azure.com/osieng/engineering/_build?definitionId=1827&branchName=master)
 
