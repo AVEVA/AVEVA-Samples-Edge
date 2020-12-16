@@ -2,8 +2,8 @@
 
 ## 1.0.3 / 2020-12-15
 
-- Updated dependencies
 - Updated to .NET 5
+- Updated dependencies
 
 ## 1.0.2 / 2020-09-23
 
