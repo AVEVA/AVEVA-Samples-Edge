@@ -1,6 +1,6 @@
 # OSIsoft Edge Data Store Azure IoT Deployment Sample
 
-**Version:** 1.0.1
+**Version:** 1.0.2
 
 [![Build Status](https://dev.azure.com/osieng/engineering/_apis/build/status/product-readiness/Edge/EDS_Azure?branchName=master)](https://dev.azure.com/osieng/engineering/_build?definitionId=1383&branchName=master)
 
@@ -29,7 +29,7 @@ This sample uses bash scripts to deploy Edge Data Store to a remote Linux edge d
 1. Install IoT extension for Azure CLI, see [Microsoft Docs](https://github.com/Azure/azure-iot-cli-extension#installation)
 
    ```bash
-   az extension add --name azure-cli-iot-ext
+   az extension add --name azure-iot
    ```
 
 1. Log in to Azure CLI, see [Microsoft Docs](https://docs.microsoft.com/en-us/cli/azure/reference-index?view=azure-cli-latest#az-login)

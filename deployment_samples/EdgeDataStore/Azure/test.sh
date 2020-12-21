@@ -2,7 +2,7 @@ echo "Test: Read settings from config.ini..."
 source <(grep = config.ini | tr -d "\r")
 
 echo "Test: Installing Azure CLI IoT Extension..."
-az extension add --name azure-cli-iot-ext
+az extension add --name azure-iot
 
 echo "Test: Logging in..."
 az login --service-principal -u $AzUsername -p $AzPassword -t $AzTenant
