@@ -12,7 +12,7 @@ The OSIsoft Edge Samples are organized by tasks and accessible through the follo
 
 ## About this repo
 
-The [style guide](https://github.com/osisoft/OSI-Samples/blob/master/STYLE_GUIDE.md) describes the organization of the repo and the code samples provided. The [test guide](https://github.com/osisoft/OSI-Samples/blob/master/TEST_GUIDE.md) goes into detail about the included automated tests. The [on prem testing](https://github.com/osisoft/OSI-Samples/blob/master/miscellaneous/ON_PREM_TESTING.md) document describes the software installed on our internal OSIsoft build agent.
+The [style guide](https://github.com/osisoft/.github/blob/restructure/STYLE_GUIDE.md) describes the organization of the repo and the code samples provided. The [test guide](https://github.com/osisoft/.github/blob/restructure/TEST_GUIDE.md) goes into detail about the included automated tests. The [on prem testing](https://github.com/osisoft/.github/blob/restructure/ON_PREM_TESTING.md) document describes the software installed on our internal OSIsoft build agent.
 
 ## Feedback
 
@@ -26,7 +26,7 @@ If your support question or issue is related to a non-modified sample (or test) 
 
 ## Contributions
 
-If you wish to contribute please take a look at the [contribution guide](https://github.com/osisoft/OSI-Samples/blob/master/CONTRIBUTING.md).
+If you wish to contribute please take a look at the [contribution guide](https://github.com/osisoft/.github/blob/restructure/CONTRIBUTING.md).
 
 ## License
 
