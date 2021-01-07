@@ -1,3 +1,6 @@
+| :loudspeaker: **Notice**: samples have transitioned to being hosted in individual repositories |
+| -----------------------------------------------------------------------------------------------|
+
 # OSIsoft Edge Samples
 
 OSIsoft's Edge technologies, including OSIsoft Edge Data Store and OSIsoft Edge Adapters, enable users to collect and store data at the Edge, and provide the infrastructure necessary to deliver applications at the Edge. In this GitHub repo, we provide samples which will help you get started with OSIsoft's Edge technologies. The OSIsoft samples are introductory, language-specific examples of programming against OSIsoft technologies. They are intended as instructional samples only.
