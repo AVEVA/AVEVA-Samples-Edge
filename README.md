@@ -1,7 +1,7 @@
-| :loudspeaker: **Notice**: samples have transitioned to being hosted in individual repositories |
-| -----------------------------------------------------------------------------------------------|
-
 # OSIsoft Edge Samples
+
+| :loudspeaker: **Notice**: samples have transitioned to being hosted in individual repositories |
+| ---------------------------------------------------------------------------------------------- |
 
 OSIsoft's Edge technologies, including OSIsoft Edge Data Store and OSIsoft Edge Adapters, enable users to collect and store data at the Edge, and provide the infrastructure necessary to deliver applications at the Edge. In this GitHub repo, we provide samples which will help you get started with OSIsoft's Edge technologies. The OSIsoft samples are introductory, language-specific examples of programming against OSIsoft technologies. They are intended as instructional samples only.
 
@@ -120,7 +120,40 @@ The OSIsoft Edge Samples are organized by tasks and accessible through the follo
         </tr>
       </table>
     </td>
-    <td align="middle" valign="top" width="50%"></td>
+    <td align="middle" valign="top" width="50%">
+      <b>
+        <a
+          href="https://github.com/osisoft/sample-sds-visualization-angular"
+        >
+          SDS Visualization
+        </a>
+      </b>
+      <br />
+      This sample demonstrates a basic visualization application that can find and trend values from streams in the Sequential Data Store.
+      <br />
+      <br />
+      <table align="middle">
+        <tr>
+          <td align="middle">
+            <a
+              href="https://github.com/osisoft/sample-sds-visualization-angular"
+            >
+              Angular
+            </a>
+          </td>
+          <td align="middle">
+            <a
+              href="https://dev.azure.com/osieng/engineering/_build/latest?definitionId=2686&repoName=osisoft%2Fsample-sds-visualization-angular&branchName=master"
+            >
+              <img
+                src="https://dev.azure.com/osieng/engineering/_apis/build/status/product-readiness/SDS/osisoft.sample-sds-visualization-angular?repoName=osisoft%2Fsample-sds-visualization-angular&branchName=master"
+                alt="Build Status"
+              />
+            </a>
+          </td>
+        </tr>
+      </table>
+    </td>
   </tr>
 </table>
 
