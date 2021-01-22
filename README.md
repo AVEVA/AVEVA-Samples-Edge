@@ -7,11 +7,122 @@ OSIsoft's Edge technologies, including OSIsoft Edge Data Store and OSIsoft Edge 
 
 The OSIsoft Edge Samples are organized by tasks and accessible through the following table:
 
-| Task                                                                                                | Description                                                                                                                                               | Languages                                                                                 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Test&nbsp;Status&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                                                                                                                                                                                                                                                                                |
-| --------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [EDS Analytics](https://github.com/osisoft/sample-eds-eds_analytics-dotnet)                         | This sample demonstrates how to build an application that can run analytics against streams in Edge Data Store and write results back to Edge Data Store. | [.NET](https://github.com/osisoft/sample-eds-eds_analytics-dotnet)                        | [![Build Status](https://dev.azure.com/osieng/engineering/_apis/build/status/product-readiness/Edge/osisoft.sample-eds-eds_analytics-dotnet?repoName=osisoft%2Fsample-eds-eds_analytics-dotnet&branchName=master)](https://dev.azure.com/osieng/engineering/_build/latest?definitionId=2642&repoName=osisoft%2Fsample-eds-eds_analytics-dotnet&branchName=master)                                                       |
-| [EDS Azure Deployment](https://github.com/osisoft/sample-eds-eds_azure_deployment-bash_scripts)     | This sample uses bash scripts to deploy Edge Data Store to a remote Linux edge device using Azure IoT Hub and Azure IoT Edge Modules.                     | [Bash Scripts](https://github.com/osisoft/sample-eds-eds_azure_deployment-bash_scripts)   | [![Build Status](https://dev.azure.com/osieng/engineering/_apis/build/status/product-readiness/Edge/osisoft.sample-eds-eds_azure_deployment-bash_scripts?repoName=osisoft%2Fsample-eds-eds_azure_deployment-bash_scripts&branchName=master)](https://dev.azure.com/osieng/engineering/_build/latest?definitionId=2643&repoName=osisoft%2Fsample-eds-eds_azure_deployment-bash_scripts&branchName=master)                |
-| [EDS Install Deployment](https://github.com/osisoft/sample-eds-eds_install_deployment-bash_scripts) | This sample uses bash scripts to install and configure Edge Data Store on a remote Linux edge device.                                                     | [Bash Scripts](https://github.com/osisoft/sample-eds-eds_install_deployment-bash_scripts) | [![Build Status](https://dev.azure.com/osieng/engineering/_apis/build/status/product-readiness/Edge/osisoft.sample-eds-eds_install_deployment-bash_scripts?repoName=osisoft%2Fsample-eds-eds_install_deployment-bash_scripts&branchName=master)](https://dev.azure.com/osieng/engineering/_build/latest?definitionId=2644&repoName=osisoft%2Fsample-eds-eds_install_deployment-bash_scripts&branchName=master)          |
+<table align="middle" width="100%">
+  <tr>
+    <th align="middle" colspan="2">
+      <h2>Tasks</h2>
+    </th>
+  </tr>
+  <tr>
+    <td align="middle" valign="top" width="50%">
+      <b>
+        <a href="https://github.com/osisoft/sample-eds-eds_analytics-dotnet">
+          EDS Analytics
+        </a>
+      </b>
+      <br />
+      This sample demonstrates how to build an application that can run
+      analytics against streams in Edge Data Store and write results back to
+      Edge Data Store.
+      <br />
+      <br />
+      <table align="middle">
+        <tr>
+          <td align="middle">
+            <a
+              href="https://github.com/osisoft/sample-eds-eds_analytics-dotnet"
+            >
+              .NET
+            </a>
+          </td>
+          <td align="middle">
+            <a
+              href="https://dev.azure.com/osieng/engineering/_build/latest?definitionId=2642&repoName=osisoft%2Fsample-eds-eds_analytics-dotnet&branchName=master"
+            >
+              <img
+                src="https://dev.azure.com/osieng/engineering/_apis/build/status/product-readiness/Edge/osisoft.sample-eds-eds_analytics-dotnet?repoName=osisoft%2Fsample-eds-eds_analytics-dotnet&branchName=master"
+                alt="Build Status"
+              />
+            </a>
+          </td>
+        </tr>
+      </table>
+    </td>
+    <td align="middle" valign="top" width="50%">
+      <b>
+        <a
+          href="https://github.com/osisoft/sample-eds-eds_azure_deployment-bash_scripts"
+        >
+          EDS Azure Deployment
+        </a>
+      </b>
+      <br />
+      This sample uses bash scripts to deploy Edge Data Store to a remote Linux
+      edge device using Azure IoT Hub and Azure IoT Edge Modules.
+      <br />
+      <br />
+      <table align="middle">
+        <tr>
+          <td align="middle">
+            <a
+              href="https://github.com/osisoft/sample-eds-eds_azure_deployment-bash_scripts"
+            >
+              Bash Scripts
+            </a>
+          </td>
+          <td align="middle">
+            <a
+              href="https://dev.azure.com/osieng/engineering/_build/latest?definitionId=2643&repoName=osisoft%2Fsample-eds-eds_azure_deployment-bash_scripts&branchName=master"
+            >
+              <img
+                src="https://dev.azure.com/osieng/engineering/_apis/build/status/product-readiness/Edge/osisoft.sample-eds-eds_azure_deployment-bash_scripts?repoName=osisoft%2Fsample-eds-eds_azure_deployment-bash_scripts&branchName=master"
+                alt="Build Status"
+              />
+            </a>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td align="middle" valign="top" width="50%">
+      <b>
+        <a
+          href="https://github.com/osisoft/sample-eds-eds_install_deployment-bash_scripts"
+        >
+          EDS Install Deployment
+        </a>
+      </b>
+      <br />
+      This sample uses bash scripts to install and configure Edge Data Store on
+      a remote Linux edge device.
+      <br />
+      <br />
+      <table align="middle">
+        <tr>
+          <td align="middle">
+            <a
+              href="https://github.com/osisoft/sample-eds-eds_install_deployment-bash_scripts"
+            >
+              Bash Scripts
+            </a>
+          </td>
+          <td align="middle">
+            <a
+              href="https://dev.azure.com/osieng/engineering/_build/latest?definitionId=2644&repoName=osisoft%2Fsample-eds-eds_install_deployment-bash_scripts&branchName=master"
+            >
+              <img
+                src="https://dev.azure.com/osieng/engineering/_apis/build/status/product-readiness/Edge/osisoft.sample-eds-eds_install_deployment-bash_scripts?repoName=osisoft%2Fsample-eds-eds_install_deployment-bash_scripts&branchName=master"
+                alt="Build Status"
+              />
+            </a>
+          </td>
+        </tr>
+      </table>
+    </td>
+    <td align="middle" valign="top" width="50%"></td>
+  </tr>
+</table>
 
 ## About this repo
 
