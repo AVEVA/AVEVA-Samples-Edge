@@ -37,10 +37,10 @@ The OSIsoft Edge Samples are organized by tasks and accessible through the follo
           </td>
           <td align="middle">
             <a
-              href="https://dev.azure.com/osieng/engineering/_build/latest?definitionId=2642&repoName=osisoft%2Fsample-eds-eds_analytics-dotnet&branchName=master"
+              href="https://dev.azure.com/osieng/engineering/_build/latest?definitionId=2642&repoName=osisoft%2Fsample-eds-eds_analytics-dotnet&branchName=main"
             >
               <img
-                src="https://dev.azure.com/osieng/engineering/_apis/build/status/product-readiness/Edge/osisoft.sample-eds-eds_analytics-dotnet?repoName=osisoft%2Fsample-eds-eds_analytics-dotnet&branchName=master"
+                src="https://dev.azure.com/osieng/engineering/_apis/build/status/product-readiness/Edge/osisoft.sample-eds-eds_analytics-dotnet?repoName=osisoft%2Fsample-eds-eds_analytics-dotnet&branchName=main"
                 alt="Build Status"
               />
             </a>
@@ -51,7 +51,7 @@ The OSIsoft Edge Samples are organized by tasks and accessible through the follo
     <td align="middle" valign="top" width="50%">
       <b>
         <a
-          href="https://github.com/osisoft/sample-eds-eds_azure_deployment-bash_scripts"
+          href="https://github.com/osisoft/sample-eds-eds_azure_deployment-shell"
         >
           EDS Azure Deployment
         </a>
@@ -65,17 +65,17 @@ The OSIsoft Edge Samples are organized by tasks and accessible through the follo
         <tr>
           <td align="middle">
             <a
-              href="https://github.com/osisoft/sample-eds-eds_azure_deployment-bash_scripts"
+              href="https://github.com/osisoft/sample-eds-eds_azure_deployment-shell"
             >
               Bash Scripts
             </a>
           </td>
           <td align="middle">
             <a
-              href="https://dev.azure.com/osieng/engineering/_build/latest?definitionId=2643&repoName=osisoft%2Fsample-eds-eds_azure_deployment-bash_scripts&branchName=master"
+              href="https://dev.azure.com/osieng/engineering/_build/latest?definitionId=3086&branchName=main"
             >
               <img
-                src="https://dev.azure.com/osieng/engineering/_apis/build/status/product-readiness/Edge/osisoft.sample-eds-eds_azure_deployment-bash_scripts?repoName=osisoft%2Fsample-eds-eds_azure_deployment-bash_scripts&branchName=master"
+                src="https://dev.azure.com/osieng/engineering/_apis/build/status/product-readiness/Edge/osisoft.sample-eds-eds_azure_deployment-shell?branchName=main"
                 alt="Build Status"
               />
             </a>
@@ -88,7 +88,7 @@ The OSIsoft Edge Samples are organized by tasks and accessible through the follo
     <td align="middle" valign="top" width="50%">
       <b>
         <a
-          href="https://github.com/osisoft/sample-eds-eds_install_deployment-bash_scripts"
+          href="https://github.com/osisoft/sample-eds-eds_install_deployment-shell"
         >
           EDS Install Deployment
         </a>
@@ -102,17 +102,17 @@ The OSIsoft Edge Samples are organized by tasks and accessible through the follo
         <tr>
           <td align="middle">
             <a
-              href="https://github.com/osisoft/sample-eds-eds_install_deployment-bash_scripts"
+              href="https://github.com/osisoft/sample-eds-eds_install_deployment-shell"
             >
               Bash Scripts
             </a>
           </td>
           <td align="middle">
             <a
-              href="https://dev.azure.com/osieng/engineering/_build/latest?definitionId=2644&repoName=osisoft%2Fsample-eds-eds_install_deployment-bash_scripts&branchName=master"
+              href="https://dev.azure.com/osieng/engineering/_build/latest?definitionId=3085&branchName=main"
             >
               <img
-                src="https://dev.azure.com/osieng/engineering/_apis/build/status/product-readiness/Edge/osisoft.sample-eds-eds_install_deployment-bash_scripts?repoName=osisoft%2Fsample-eds-eds_install_deployment-bash_scripts&branchName=master"
+                src="https://dev.azure.com/osieng/engineering/_apis/build/status/product-readiness/Edge/osisoft.sample-eds-eds_install_deployment-shell?branchName=main"
                 alt="Build Status"
               />
             </a>
@@ -143,10 +143,10 @@ The OSIsoft Edge Samples are organized by tasks and accessible through the follo
           </td>
           <td align="middle">
             <a
-              href="https://dev.azure.com/osieng/engineering/_build/latest?definitionId=2686&repoName=osisoft%2Fsample-sds-visualization-angular&branchName=master"
+              href="https://dev.azure.com/osieng/engineering/_build/latest?definitionId=2686&repoName=osisoft%2Fsample-sds-visualization-angular&branchName=main"
             >
               <img
-                src="https://dev.azure.com/osieng/engineering/_apis/build/status/product-readiness/SDS/osisoft.sample-sds-visualization-angular?repoName=osisoft%2Fsample-sds-visualization-angular&branchName=master"
+                src="https://dev.azure.com/osieng/engineering/_apis/build/status/product-readiness/SDS/osisoft.sample-sds-visualization-angular?repoName=osisoft%2Fsample-sds-visualization-angular&branchName=main"
                 alt="Build Status"
               />
             </a>
